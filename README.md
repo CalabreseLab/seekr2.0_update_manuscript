@@ -204,6 +204,7 @@ For example, comparing the human lncRNA XIST to that of another human lncRNA, KC
 ```python
 from seekr.kmer_counts import BasicCounter
 from seekr.pearson import pearson as seekrPearson
+import numpy as np
 
 bkg_norm_6 = BasicCounter('v43_canonical.fa', k=6)
 bkg_norm_6.get_counts()
@@ -307,6 +308,7 @@ from seekr.kmer_counts import BasicCounter
 from seekr import find_dist
 from seekr import find_pval
 from seekr import kmer_heatmap
+import numpy as np
 
 v43_4dists = find_dist.find_dist(inputseq='v43_can500_namedchunks_500.fa', 
                                  k_mer=4, log2='Log2.post', models='common10',
@@ -387,6 +389,7 @@ Code for Panel E:
 ```python
 from seekr.kmer_counts import BasicCounter
 from seekr import kmer_heatmap
+import numpy as np
 
 bkg_norm_3 = BasicCounter('v43_canonical.fa', k=6)
 bkg_norm_3.get_counts()
@@ -419,6 +422,7 @@ Code for Panel F:
 ```python
 from seekr.kmer_counts import BasicCounter
 from seekr import kmer_msd_barplot
+import numpy as np
 
 bkg_norm_3 = BasicCounter('v43_canonical.fa', k=6)
 bkg_norm_3.get_counts()
@@ -444,6 +448,7 @@ Code for Panel G:
 ```python
 from seekr.kmer_counts import BasicCounter
 from seekr import kmer_count_barplot
+import numpy as np
 
 bkg_norm_3 = BasicCounter('v43_canonical.fa', k=6)
 bkg_norm_3.get_counts()
@@ -473,6 +478,7 @@ Code for Panel H:
 from seekr.kmer_counts import BasicCounter
 from seekr import find_pval
 from seekr import kmer_heatmap
+import numpy as np
 
 bkg_norm_4 = BasicCounter('v43_can500_namedchunks_500.fa', k=4)
 bkg_norm_4.get_counts()
@@ -519,6 +525,7 @@ Code for Panel S1:
 ```python
 from seekr.kmer_counts import BasicCounter
 from seekr import kmer_leiden
+import numpy as np
 
 bkg_norm_4 = BasicCounter('v43_can500_namedchunks_500.fa', k=4)
 bkg_norm_4.get_counts()
@@ -549,6 +556,7 @@ XIST_repeats.fa is also provided under this github repository.
 ```python
 from seekr.kmer_counts import BasicCounter
 from seekr import find_pval
+import numpy as np
 
 bkg_norm_4 = BasicCounter('v43_can500_namedchunks_500.fa', k=4)
 bkg_norm_4.get_counts()
