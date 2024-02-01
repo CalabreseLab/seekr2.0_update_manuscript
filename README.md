@@ -178,20 +178,335 @@ The result file v43_chunks_v_ABDEF_pvals.csv is then processed in R with the cod
 
 
 
+## Python
+
+### Figure 1
+
+#### Panel A
+
+For example, selecting the set of deduplicated “Ensembl_canonical” lncRNAs from GENCODE’s v43 lncRNA collection reduces the total number of lncRNA transcripts from 58,023 to 15,550.
+
+```python
+from seekr import fasta
+from seekr import filter_gencode
+
+downloader = fasta.Downloader()
+downloader.get_gencode(biotype='lncRNA', species='human', 
+                       gtf=True, release='43', unzip=True)
+
+headers, seqs = filter_gencode.filter_gencode(fasta_path='v43_lncRNA.fa', 
+                                              gtf_path='v43_lncRNA.chr_patch_hapl_scaff.annotation.gtf',
+                                              len_threshold=500, canonical=True,
+                                              rm_dup=True, outputname='v43_canonical')
+```
+
+For example, comparing the human lncRNA XIST to that of another human lncRNA, KCNQ1OT1, using k-mer length of k=6 and the set of deduplicated “Ensembl_canonical” lncRNAs in GENCODE as a background set, we find that SEEKR returns a Pearson’s r value of 0.07, meaning that relative to the set of Ensembl_canonical lncRNAs the 6-mer profiles of XIST and KCNQ1OT1 exhibit a weak positive correlation (FIG).
+
+```python
+from seekr.kmer_counts import BasicCounter
+from seekr.pearson import pearson as seekrPearson
+
+bkg_norm_6 = BasicCounter('v43_canonical.fa', k=6)
+bkg_norm_6.get_counts()
+
+mean_path = 'mean_6mers.npy'
+std_path = 'std_6mers.npy'
+np.save(mean_path, bkg_norm_6.mean)
+np.save(std_path, bkg_norm_6.std)
 
 
+xist_count = BasicCounter(infasta='XIST.fa', outfile='XIST_6mers.csv', k=6,
+						  mean='mean_6mers.npy', std='std_6mers.npy', log2='Log2.post')
+xist_count. make_count_file()
 
 
+ot1_count = BasicCounter(infasta='KCNQ1OT1.fa', outfile='OT1_6mers.csv', k=6,
+						 mean='mean_6mers.npy', std='std_6mers.npy', log2='Log2.post')
+ot1_count. make_count_file()
 
 
+sim = seekrPearson(xist_count.counts,ot1_count.counts, outfile='XIST_vs_OT1.csv')
+```
+
+#### Panel B
+
+SEEKR-derived Pearson’s r values for large sets of background sequences are often well-fit by log-normal distributions (Figure 1B).
+
+```python
+from seekr import find_dist
+
+fitres = find_dist.find_dist(inputseq='v43_canonical.fa', k_mer=6, log2='Log2.post', models='common10', 
+                             subsetting=True, subset_size = 100000, fit_model=True, statsmethod='ks',
+                             progress_bar=True, plotfit='modelfit6.pdf', outputname='v43_can_6dists')
+```
+
+#### Panel C
+
+Continuing from the example above, we find that XIST and KCNQ1OT1 are more similar to each other than ~93% of sampled pairwise comparisons of GENCODE canonical lncRNAs, despite their low positive Pearson’s r value (p-value of 0.07; Figure 1C).
+
+Moreover, with two additional commands, we find some ~1500 GENCODE canonical lncRNAs whose overall k-mer contents are more similar to XIST than KCNQ1OT1 (Supp_table). 
+
+The top ten most XIST-similar lncRNAs, along with their Benjamini-Hochberg adjusted p-values are shown in Table 1.
+
+```python
+from seekr import find_dist
+from seekr import find_pval
+from seekr import adj_pval
+
+v43_6dists = find_dist.find_dist(inputseq='v43_canonical.fa', k_mer=6, log2='Log2.post', models='common10', 
+                             	 subsetting=True, subset_size = 100000, fit_model=True, statsmethod='ks',
+                             	 progress_bar=True, plotfit='modelfit6.pdf', outputname='v43_can_6dists')
+
+xist_ot1_pval=find_pval.find_pval(seq1file='XIST.fa', seq2file='KCNQ1OT1.fa', 
+								  mean_path='mean_6mers.npy', std_path='std_6mers.npy',
+                          		  k_mer=6, fitres=v43_6dists, log2='Log2.post', bestfit=1, 
+                          		  outputname='XIST_v_OT1_pval', progress_bar=True)
+
+v43_xist_pval=find_pval.find_pval(seq1file='v43_canonical.fa', seq2file='XIST.fa', 
+								  mean_path='mean_6mers.npy', std_path='std_6mers.npy',
+                          		  k_mer=6, fitres=v43_6dists, log2='Log2.post', bestfit=1, 
+                          		  outputname='v43_v_XIST_pval', progress_bar=True)
+
+adjpvals=adj_pval.adj_pval(v43_xist_pval, method='fdr_bh', alpha=0.05, outputname='v43_v_XIST_pvals_bh')
+```
+
+### Figure 2 graphing with chunks
+
+#### generate chunks
+
+Therefore, to determine whether our select XIST-like lncRNAs harbored notable regional similarities with XIST, we fragmented the lncRNAs into ~500 nucleotide (nt) chunks and compared the chunks in each XIST-like lncRNA to each chunk within XIST.
+
+For XIST, we fragemented it based on its sequence features: each repeat is by itself an individual chunk. For the intervals that is longer than 1000nt, we fragmented it in the same way as the other lncRNAs.
+
+The python code for this part is available in this github repository named: generate_chunks.py
+The fragmented lncRNAs and XIST fasta file are also available: v43_can500_namedchunks_500.fa and XIST_manual_chunks.fa
+
+#### Panel B to D
+
+Because data suggest Repeats A, B, D, E, and F are discrete functional domains, we evaluated each XIST Repeat as a single intact chunk and separated the intervening XIST intervals into ~500 chunks. From these analyses, we found that LINC00632, DLX6-AS1, and PCDH10-DT each harbor significant similarity to Repeat E but lack similarity to the other Repeats in XIST (Figures 2B-D). Moreover, LINC00632, DLX6-AS1, and PCDH10-DT each harbor significant similarity to chunks distributed across the final exon of XIST (Figures 2B-D).
+
+```python
+from seekr.kmer_counts import BasicCounter
+from seekr import find_dist
+from seekr import find_pval
+from seekr import kmer_heatmap
+
+v43_4dists = find_dist.find_dist(inputseq='v43_can500_namedchunks_500.fa', k_mer=4, 
+								 log2='Log2.post', models='common10', 
+                             	 subsetting=True, subset_size = 100000, fit_model=True, statsmethod='ks',
+                             	 progress_bar=True, plotfit='modelfit4.pdf', outputname='v43_can_4dists')
 
 
+bkg_norm_4 = BasicCounter('v43_can500_namedchunks_500.fa', k=4)
+bkg_norm_4.get_counts()
+
+mean_path = 'mean_4mers.npy'
+std_path = 'std_4mers.npy'
+np.save(mean_path, bkg_norm_4.mean)
+np.save(std_path, bkg_norm_4.std)
 
 
+dlx6_xist_pval=find_pval.find_pval(seq1file='XIST_manual_chunks.fa', seq2file='DLX6-AS1_namedchunks_500.fa', 
+								   mean_path='mean_4mers.npy', std_path='std_4mers.npy',
+                          		   k_mer=4, fitres=v43_4dists, log2='Log2.post', bestfit=1, 
+                          		   outputname='DLX6_v_X_pvals', progress_bar=True)
+
+linc00632_xist_pval=find_pval.find_pval(seq1file='XIST_manual_chunks.fa', seq2file='LINC00632_namedchunks_500.fa', 
+								   		mean_path='mean_4mers.npy', std_path='std_4mers.npy',
+                          		   		k_mer=4, fitres=v43_4dists, log2='Log2.post', bestfit=1, 
+                          		   		outputname='LINC00632_v_X_pvals', progress_bar=True)
+
+pcdh10_xist_pval=find_pval.find_pval(seq1file='XIST_manual_chunks.fa', seq2file='PCDH10-DT_namedchunks_500.fa', 
+								   	 mean_path='mean_4mers.npy', std_path='std_4mers.npy',
+                          		   	 k_mer=4, fitres=v43_4dists, log2='Log2.post', bestfit=1, 
+                          		   	 outputname='PCDH10-DT_v_X_pvals', progress_bar=True)
 
 
+kmer_heatmap.kmer_heatmap(dlx6_xist_pval, datamin=0, datamax=1, thresh_value=0.05, 
+						  color_range=['#1b7837', '#ffffff', '#c51b7d'], cluster=False,
+                          distmetric='correlation', linkmethod='complete', 
+                          hmapw_ratio=0.3, hmaph_ratio=0.3, x_tick_size=16, y_tick_size=16, 
+                          cbar_font_size=16, outputname='DLX6_v_X_pvals', hformat='pdf', hdpi=300)
+
+kmer_heatmap.kmer_heatmap(linc00632_xist_pval, datamin=0, datamax=1, thresh_value=0.05, 
+						  color_range=['#1b7837', '#ffffff', '#c51b7d'], cluster=False,
+                          distmetric='correlation', linkmethod='complete', 
+                          hmapw_ratio=0.3, hmaph_ratio=0.3, x_tick_size=16, y_tick_size=16, 
+                          cbar_font_size=16, outputname='LINC00632_v_X_pvals', hformat='pdf', hdpi=300)
+
+kmer_heatmap.kmer_heatmap(pcdh10_xist_pval, datamin=0, datamax=1, thresh_value=0.05, 
+						  color_range=['#1b7837', '#ffffff', '#c51b7d'], cluster=False,
+                          distmetric='correlation', linkmethod='complete', 
+                          hmapw_ratio=0.3, hmaph_ratio=0.3, x_tick_size=16, y_tick_size=16, 
+                          cbar_font_size=16, outputname='PCDH10-DT_v_X_pvals', hformat='pdf', hdpi=300)
+```
+
+#### Panel E to G
+
+A closer examination revealed that these similarities could be attributed to the uniform enrichment of k-mers rich in A and T nucleotides; whereas, k-mers rich in G and C nucleotides were among the most variably enriched (Figures 2E-G).
+
+Code for Panel E:
+
+```python
+from seekr.kmer_counts import BasicCounter
+from seekr import kmer_heatmap
+
+bkg_norm_3 = BasicCounter('v43_canonical.fa', k=6)
+bkg_norm_3.get_counts()
+
+mean_path = 'mean_3mers.npy'
+std_path = 'std_3mers.npy'
+np.save(mean_path, bkg_norm_3.mean)
+np.save(std_path, bkg_norm_3.std)
 
 
+slnc_count = BasicCounter(infasta='select_lncs.fa', outfile='select_lnc_3mers.csv', k=3,
+						  mean='mean_3mers.npy', std='std_3mers.npy', log2='Log2.post')
+
+slnc_count. make_count_file()
+
+kmer_heatmap.kmer_heatmap(slnc_count, datamin=0, datamax=3, thresh_value=1, 
+						  color_range=['#fcfc03', '#ffffff', '#1907e6'], cluster=False,
+                          distmetric='correlation', linkmethod='complete', 
+                          hmapw_ratio=0.3, hmaph_ratio=0.3, x_tick_size=16, y_tick_size=16, 
+                          cbar_font_size=16, outputname='select_lnc_3mers', hformat='pdf', hdpi=300)
+```
+
+Code for Panel F:
+
+```python
+from seekr.kmer_counts import BasicCounter
+from seekr import kmer_msd_barplot
+
+bkg_norm_3 = BasicCounter('v43_canonical.fa', k=6)
+bkg_norm_3.get_counts()
+
+mean_path = 'mean_3mers.npy'
+std_path = 'std_3mers.npy'
+np.save(mean_path, bkg_norm_3.mean)
+np.save(std_path, bkg_norm_3.std)
+
+
+kmer_msd_barplot.kmer_msd_barplot(inputfile='select_lncs.fa', mean='mean_3mers.npy', std='std_3mers.npy', 
+                                  log2 = 'Log2.post', k=3, sortstat='mean', sortmethod='descending', 
+                                  topkmernumber=10, xlabelsize=20, ylabelsize=20, xticksize=20, yticksize=20, 
+                                  outputname='select_lncs_msd_barplot3', pformat='pdf', pdpi=300)
+```
+
+Code for Panel G:
+
+```python
+from seekr.kmer_counts import BasicCounter
+from seekr import kmer_count_barplot
+
+bkg_norm_3 = BasicCounter('v43_canonical.fa', k=6)
+bkg_norm_3.get_counts()
+
+mean_path = 'mean_3mers.npy'
+std_path = 'std_3mers.npy'
+np.save(mean_path, bkg_norm_3.mean)
+np.save(std_path, bkg_norm_3.std)
+
+
+kmer_count_barplot.kmer_count_barplot(inputfile='select_lncs.fa', mean='mean_3mers.npy', std='std_3mers.npy',
+                                      log2='Log2.post', k=3, sortmethod='descending', topkmernumber=10,
+                                      xlabelsize=20, ylabelsize=20, xticksize=20, yticksize=20, legendsize=12,
+                                      outputname='select_lncs_barplot3', pformat='pdf', pdpi=300)
+```
+
+#### Panel H I and S1
+
+We also unexpectedly observed that many of the 500nt chunks within XIST’s final exon were significantly more similar to each other than would be expected by chance (Figures 2H, 2I, and S1).
+
+Code for Panel H:
+
+```python
+from seekr.kmer_counts import BasicCounter
+from seekr import find_pval
+from seekr import kmer_heatmap
+
+bkg_norm_4 = BasicCounter('v43_can500_namedchunks_500.fa', k=4)
+bkg_norm_4.get_counts()
+
+mean_path = 'mean_4mers.npy'
+std_path = 'std_4mers.npy'
+np.save(mean_path, bkg_norm_4.mean)
+np.save(std_path, bkg_norm_4.std)
+
+
+xist_xist_pval=find_pval.find_pval(seq1file='XIST_manual_chunks.fa', seq2file='XIST_manual_chunks.fa', 
+								   mean_path='mean_4mers.npy', std_path='std_4mers.npy',
+                          		   k_mer=4, fitres=v43_4dists, log2='Log2.post', bestfit=1, 
+                          		   outputname='X_v_X_pvals', progress_bar=True)
+
+
+kmer_heatmap.kmer_heatmap(xist_xist_pval, datamin=0, datamax=1, thresh_value=0.05, 
+						  color_range=['#1b7837', '#ffffff', '#c51b7d'], cluster=False,
+                          distmetric='correlation', linkmethod='complete', 
+                          hmapw_ratio=0.4, hmaph_ratio=0.3, x_tick_size=16, y_tick_size=16, 
+                          cbar_font_size=16, outputname='X_v_X_pvals', hformat='pdf', hdpi=300)
+```
+
+Code for Panel I:
+
+```python
+from seekr import kmer_dendrogram
+
+kmer_dendrogram.kmer_dendrogram(xist_xist_pval, dendro_direct='column', 
+                                distmetric='correlation', linkmethod='complete', 
+                                plot_ht=8, wd_ratio=0.5, leaf_font_size = 16, 
+                                outputname='X_v_X_dendrogram', pformat='pdf', pdpi=300)
+```
+
+Code for Panel S1:
+
+```python
+from seekr.kmer_counts import BasicCounter
+from seekr import kmer_leiden
+
+bkg_norm_4 = BasicCounter('v43_can500_namedchunks_500.fa', k=4)
+bkg_norm_4.get_counts()
+
+mean_path = 'mean_4mers.npy'
+std_path = 'std_4mers.npy'
+np.save(mean_path, bkg_norm_4.mean)
+np.save(std_path, bkg_norm_4.std)
+
+
+kmer_leiden.kmer_leiden(inputfile='XIST_manual_chunks.fa', mean='mean_4mers.npy', std='std_4mers.npy', 
+                        k=4, algo='RBERVertexPartition', rs=1.1, pearsoncutoff=0.15, csvfile='XIST_manual_chunks')
+```
+
+The result files: XIST_manual_chunks_nodes_leiden.csv and XIST_manual_chunks_edges_leiden.csv are then directly imported into Gephi as nodes and edges files for network plotting with Force Atalas2 layout.
+
+### Table 2 and Table S2
+
+Given that the tandem repeats within XIST are some of the regions most essential for its ability to induce and maintain gene silencing, we used SEEKR to perform a parallel search for XIST-like lncRNAs among the set of GENCODE canonical lncRNAs. In this search, we separated all 15,993 GENCODE canonical lncRNAs into ~500nt fragments, and then used SEEKR to identify lncRNAs containing fragments that harbored significant k-mer similarity to XIST Repeats A, B, D, E, and F (p-value of <0.05).
+
+We then summed the number of XIST-similar fragments in each lncRNA and used these sums to rank lncRNAs by their overall XIST-likeness. This analysis identified several intriguing lncRNAs (TABLE; sup table).
+
+XIST_repeats.fa is also provided under this github repository.
+
+```python
+from seekr.kmer_counts import BasicCounter
+from seekr import find_pval
+
+bkg_norm_4 = BasicCounter('v43_can500_namedchunks_500.fa', k=4)
+bkg_norm_4.get_counts()
+
+mean_path = 'mean_4mers.npy'
+std_path = 'std_4mers.npy'
+np.save(mean_path, bkg_norm_4.mean)
+np.save(std_path, bkg_norm_4.std)
+
+
+v43_ABDEF_pval=find_pval.find_pval(seq1file='v43_can500_namedchunks_500.fa', seq2file='XIST_repeats.fa', 
+								   mean_path='mean_4mers.npy', std_path='std_4mers.npy',
+                          		   k_mer=4, fitres=v43_4dists, log2='Log2.post', bestfit=1, 
+                          		   outputname='v43_chunks_v_ABDEF_pvals', progress_bar=True)
+```
+
+The result file v43_chunks_v_ABDEF_pvals.csv is then processed in R with the code: chunkABDE_organize.R to produce the count file: v43_lncRNA_ABDEF_count.csv. This file is then used to generate Table 2 and Table S2
 
 
 ## Additional considerations
