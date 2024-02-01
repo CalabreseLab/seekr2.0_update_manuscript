@@ -12,7 +12,7 @@ This github repo contains the codes needed to generate plots in the seekr 2.0 up
  $ pip install seekr
  ```
 
- which will make both the command line tool and the python module available. Here listed are the codes to generate plots in console and in python separately.
+ which will make both the command line tool and the python module available. Here listed are the codes to generate plots in console and in python separately. seekr2.0_manuscript.sh and seekr2.0_manuscript.py contains the codes all togher without the comments.
 
 
 ## Console
