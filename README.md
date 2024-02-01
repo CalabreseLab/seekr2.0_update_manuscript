@@ -191,8 +191,7 @@ from seekr import fasta
 from seekr import filter_gencode
 
 downloader = fasta.Downloader()
-downloader.get_gencode(biotype='lncRNA', species='human', 
-                       gtf=True, release='43', unzip=True)
+downloader.get_gencode(biotype='lncRNA', species='human', gtf=True, release='43', unzip=True)
 
 headers, seqs = filter_gencode.filter_gencode(fasta_path='v43_lncRNA.fa', 
                                               gtf_path='v43_lncRNA.chr_patch_hapl_scaff.annotation.gtf',
@@ -215,13 +214,13 @@ np.save(mean_path, bkg_norm_6.mean)
 np.save(std_path, bkg_norm_6.std)
 
 
-xist_count = BasicCounter(infasta='XIST.fa', outfile='XIST_6mers.csv', k=6,
-						  mean='mean_6mers.npy', std='std_6mers.npy', log2='Log2.post')
+xist_count = BasicCounter(infasta='XIST.fa', outfile='XIST_6mers.csv', k=6, 
+	mean='mean_6mers.npy', std='std_6mers.npy', log2='Log2.post')
 xist_count. make_count_file()
 
 
-ot1_count = BasicCounter(infasta='KCNQ1OT1.fa', outfile='OT1_6mers.csv', k=6,
-						 mean='mean_6mers.npy', std='std_6mers.npy', log2='Log2.post')
+ot1_count = BasicCounter(infasta='KCNQ1OT1.fa', outfile='OT1_6mers.csv', k=6, 
+	mean='mean_6mers.npy', std='std_6mers.npy', log2='Log2.post')
 ot1_count. make_count_file()
 
 
