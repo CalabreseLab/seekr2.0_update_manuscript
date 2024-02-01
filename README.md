@@ -266,21 +266,21 @@ v43_6dists = find_dist.find_dist(inputseq='v43_canonical.fa', k_mer=6,
 
 xist_ot1_pval=find_pval.find_pval(seq1file='XIST.fa', 
                                   seq2file='KCNQ1OT1.fa', 
-								  mean_path='mean_6mers.npy', 
+                                  mean_path='mean_6mers.npy', 
                                   std_path='std_6mers.npy',
-                          		  k_mer=6, fitres=v43_6dists, 
+                                  k_mer=6, fitres=v43_6dists, 
                                   log2='Log2.post', bestfit=1, 
-                          		  outputname='XIST_v_OT1_pval', 
+                                  outputname='XIST_v_OT1_pval', 
                                   progress_bar=True)
 
 
 v43_xist_pval=find_pval.find_pval(seq1file='v43_canonical.fa', 
                                   seq2file='XIST.fa', 
-								  mean_path='mean_6mers.npy', 
+                                  mean_path='mean_6mers.npy', 
                                   std_path='std_6mers.npy',
-                          		  k_mer=6, fitres=v43_6dists, 
+                                  k_mer=6, fitres=v43_6dists, 
                                   log2='Log2.post', bestfit=1, 
-                          		  outputname='v43_v_XIST_pval', 
+                                  outputname='v43_v_XIST_pval', 
                                   progress_bar=True)
 
 adjpvals=adj_pval.adj_pval(v43_xist_pval, method='fdr_bh', 
@@ -329,7 +329,7 @@ dlx6_xist_pval=find_pval.find_pval(seq1file='XIST_manual_chunks.fa',
                                    seq2file='DLX6-AS1_namedchunks_500.fa',
                                    mean_path='mean_4mers.npy', 
                                    std_path='std_4mers.npy',
-                          		   k_mer=4, fitres=v43_4dists, 
+k_mer=4, fitres=v43_4dists, 
                                    log2='Log2.post', bestfit=1, 
                           		   outputname='DLX6_v_X_pvals', 
                                    progress_bar=True)
