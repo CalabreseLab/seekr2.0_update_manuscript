@@ -329,31 +329,31 @@ dlx6_xist_pval=find_pval.find_pval(seq1file='XIST_manual_chunks.fa',
                                    seq2file='DLX6-AS1_namedchunks_500.fa',
                                    mean_path='mean_4mers.npy', 
                                    std_path='std_4mers.npy',
-k_mer=4, fitres=v43_4dists, 
+                                   k_mer=4, fitres=v43_4dists, 
                                    log2='Log2.post', bestfit=1, 
-                          		   outputname='DLX6_v_X_pvals', 
+                                   outputname='DLX6_v_X_pvals', 
                                    progress_bar=True)
 
 linc00632_xist_pval=find_pval.find_pval(seq1file='XIST_manual_chunks.fa', 
                                         seq2file='LINC00632_namedchunks_500.fa', 
                                         mean_path='mean_4mers.npy', 
                                         std_path='std_4mers.npy',
-                          		   		k_mer=4, fitres=v43_4dists, 
-                                        log2='Log2.post', bestfit=1, 
-                          		   		outputname='LINC00632_v_X_pvals', 
+                                        k_mer=4, fitres=v43_4dists, 
+                                        log2='Log2.post', bestfit=1,
+                                        outputname='LINC00632_v_X_pvals', 
                                         progress_bar=True)
 
 pcdh10_xist_pval=find_pval.find_pval(seq1file='XIST_manual_chunks.fa', 
                                      seq2file='PCDH10-DT_namedchunks_500.fa', 
-								   	 mean_path='mean_4mers.npy', 
+                                     mean_path='mean_4mers.npy', 
                                      std_path='std_4mers.npy',
-                          		   	 k_mer=4, fitres=v43_4dists, 
+                                     k_mer=4, fitres=v43_4dists, 
                                      log2='Log2.post', bestfit=1, 
-                          		   	 outputname='PCDH10-DT_v_X_pvals', 
+                                     outputname='PCDH10-DT_v_X_pvals', 
                                      progress_bar=True)
 
 
-kmer_heatmap.kmer_heatmap(dlx6_xist_pval, datamin=0, datamax=1, thresh_value=0.05, 
+kmer_heatmap.kmer_heatmap(dlx6_xist_pval, datamin=0, datamax=1, thresh_value=0.05,
                           color_range=['#1b7837', '#ffffff', '#c51b7d'], 
                           distmetric='correlation', linkmethod='complete', 
                           hmapw_ratio=0.3, hmaph_ratio=0.3, 
@@ -361,8 +361,8 @@ kmer_heatmap.kmer_heatmap(dlx6_xist_pval, datamin=0, datamax=1, thresh_value=0.0
                           cbar_font_size=16, outputname='DLX6_v_X_pvals', 
                           hformat='pdf', hdpi=300)
 
-kmer_heatmap.kmer_heatmap(linc00632_xist_pval, datamin=0, datamax=1, thresh_value=0.05, 
-						  color_range=['#1b7837', '#ffffff', '#c51b7d'], 
+kmer_heatmap.kmer_heatmap(linc00632_xist_pval, datamin=0, datamax=1, thresh_value=0.05,
+                          color_range=['#1b7837', '#ffffff', '#c51b7d'], 
                           distmetric='correlation', linkmethod='complete', 
                           hmapw_ratio=0.3, hmaph_ratio=0.3, 
                           x_tick_size=16, y_tick_size=16, 
@@ -370,7 +370,7 @@ kmer_heatmap.kmer_heatmap(linc00632_xist_pval, datamin=0, datamax=1, thresh_valu
                           hformat='pdf', hdpi=300)
 
 kmer_heatmap.kmer_heatmap(pcdh10_xist_pval, datamin=0, datamax=1, thresh_value=0.05, 
-						  color_range=['#1b7837', '#ffffff', '#c51b7d'], 
+                          color_range=['#1b7837', '#ffffff', '#c51b7d'], 
                           distmetric='correlation', linkmethod='complete', 
                           hmapw_ratio=0.3, hmaph_ratio=0.3, 
                           x_tick_size=16, y_tick_size=16, 
