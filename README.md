@@ -29,7 +29,7 @@ seekr_download_gencode lncRNA -g -r 43 -s human
 seekr_filter_gencode v43_lncRNA.fa -gtf v43_lncRNA.chr_patch_hapl_scaff.annotation.gtf -len 500 -can -rd -o v43_canonical
 ```
 
-Compare the human lncRNA *XIST* to that of another human lncRNA, *KCNQ1OT1*, using *k*-mer length of *k* = 6 and the set of deduplicated >=500nt “Ensembl_canonical” lncRNAs in GENCODE as a background set.
+Compare the human lncRNA *XIST* to that of another human lncRNA, *KCNQ1OT1*, using *k*-mer length of *k* = 6 and the set of deduplicated $\geq$ 500nt “Ensembl_canonical” lncRNAs in GENCODE as a background set.
 
 ```
 seekr_norm_vectors v43_canonical.fa -k 6 -mv mean_6mers.npy -sv std_6mers.npy
