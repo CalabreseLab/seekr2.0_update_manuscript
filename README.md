@@ -4,7 +4,7 @@ This github repo contains the codes needed to generate plots in the seekr 2.0 up
 
 ## Installation
 
- To use this library, you have to have >=Python3.9.5 on your computer.
+ To use this library, you have to have >= Python3.9.5 on your computer.
 
  Once you have Python, run:
 
