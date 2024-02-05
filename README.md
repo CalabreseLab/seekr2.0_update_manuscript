@@ -21,7 +21,7 @@ This github repo contains the codes needed to generate plots in the seekr 2.0 up
 
 #### Panel A
 
-For example, selecting the set of deduplicated “Ensembl_canonical” lncRNAs from GENCODE’s v43 lncRNA collection reduces the total number of lncRNA transcripts from 58,023 to 15,550.
+Select the set of deduplicated “Ensembl_canonical” lncRNAs that are greater than or equal to 500nt in length from the GENCODE v43 lncRNA collection.
 
 ```
 seekr_download_gencode lncRNA -g -r 43 -s human
@@ -29,7 +29,7 @@ seekr_download_gencode lncRNA -g -r 43 -s human
 seekr_filter_gencode v43_lncRNA.fa -gtf v43_lncRNA.chr_patch_hapl_scaff.annotation.gtf -len 500 -can -rd -o v43_canonical
 ```
 
-For example, comparing the human lncRNA XIST to that of another human lncRNA, KCNQ1OT1, using k-mer length of k=6 and the set of deduplicated “Ensembl_canonical” lncRNAs in GENCODE as a background set, we find that SEEKR returns a Pearson’s r value of 0.07, meaning that relative to the set of Ensembl_canonical lncRNAs the 6-mer profiles of XIST and KCNQ1OT1 exhibit a weak positive correlation (FIG).
+Compare the human lncRNA *XIST* to that of another human lncRNA, *KCNQ1OT1*, using *k*-mer length of *k* = 6 and the set of deduplicated >=500nt “Ensembl_canonical” lncRNAs in GENCODE as a background set.
 
 ```
 seekr_norm_vectors v43_canonical.fa -k 6 -mv mean_6mers.npy -sv std_6mers.npy
@@ -43,7 +43,7 @@ seekr_pearson XIST_6mers.csv OT1_6mers.csv -o XIST_vs_OT1.csv
 
 #### Panel B
 
-SEEKR-derived Pearson’s r values for large sets of background sequences are often well-fit by log-normal distributions (Figure 1B).
+Fit Python’s ‘common10’ distributions to 100000 randomly selected pairwise comparisons of sequences from v43_canonical.fa using *k*-mer length *k* = 6.
 
 ```
 seekr_find_dist v43_canonical.fa -k 6 -sbt -sbs 100000 -fm -pb -pf modelfit6.pdf -o v43_can_6dists
@@ -51,11 +51,11 @@ seekr_find_dist v43_canonical.fa -k 6 -sbt -sbs 100000 -fm -pb -pf modelfit6.pdf
 
 #### Panel C
 
-Continuing from the example above, we find that XIST and KCNQ1OT1 are more similar to each other than ~93% of sampled pairwise comparisons of GENCODE canonical lncRNAs, despite their low positive Pearson’s r value (p-value of 0.07; Figure 1C).
+Estimate a p value for the similarity between *XIST* and *KCNQ1OT1* using deduplicated GENCODE canonical lncRNAs as background and the best-fitting distribution from seekr_find_dist as the function to calculate significance.
 
-Moreover, with two additional commands, we find some ~1500 GENCODE canonical lncRNAs whose overall k-mer contents are more similar to XIST than KCNQ1OT1 (Supp_table). 
 
-The top ten most XIST-similar lncRNAs, along with their Benjamini-Hochberg adjusted p-values are shown in Table 1.
+Estimate p values for the similarity between *XIST* and all other GENCODE canonical lncRNAs.
+
 
 ```
 seekr_find_dist v43_canonical.fa -k 6 -sbt -sbs 100000 -fm -pb -pf modelfit6.pdf -o v43_can_6dists
@@ -76,11 +76,12 @@ Therefore, to determine whether our select XIST-like lncRNAs harbored notable re
 For XIST, we fragemented it based on its sequence features: each repeat is by itself an individual chunk. For the intervals that is longer than 1000nt, we fragmented it in the same way as the other lncRNAs.
 
 The python code for this part is available in this github repository named: generate_chunks.py
+
 The fragmented lncRNAs and XIST fasta file are also available: v43_can500_namedchunks_500.fa and XIST_manual_chunks.fa
 
 #### Panel B to D
 
-Because data suggest Repeats A, B, D, E, and F are discrete functional domains, we evaluated each XIST Repeat as a single intact chunk and separated the intervening XIST intervals into ~500 chunks. From these analyses, we found that LINC00632, DLX6-AS1, and PCDH10-DT each harbor significant similarity to Repeat E but lack similarity to the other Repeats in XIST (Figures 2B-D). Moreover, LINC00632, DLX6-AS1, and PCDH10-DT each harbor significant similarity to chunks distributed across the final exon of XIST (Figures 2B-D).
+Fragment select *XIST*-like lncRNAs into ~500 nucleotide (nt) chunks and compare the chunks in each *XIST*-like lncRNA to each chunk within *XIST*. Evaluate each *XIST* Repeat as a single intact chunk and separate the intervening *XIST* intervals into ~500 chunks. 
 
 ```
 seekr_find_dist v43_can500_namedchunks_500.fa -k 4 -sbt -sbs 100000 -fm -pb -pf modelfit4.pdf -o v43_can_4dists
@@ -100,11 +101,9 @@ seekr_kmer_heatmap LINC00632_v_X_pvals.csv 0 1 -th 0.05 -cr '#1b7837,#ffffff,#c5
 seekr_kmer_heatmap PCDH10-DT_v_X_pvals.csv 0 1 -th 0.05 -cr '#1b7837,#ffffff,#c51b7d' -distm correlation -linkm complete -wratio 0.3 -hratio 0.3 -xts 16 -yts 16 -cfs 16 -o PCDH10-DT_v_X_pvals -hf pdf -hd 300
 ```
 
-#### Panel E to G
+#### Panel E
 
-A closer examination revealed that these similarities could be attributed to the uniform enrichment of k-mers rich in A and T nucleotides; whereas, k-mers rich in G and C nucleotides were among the most variably enriched (Figures 2E-G).
-
-Code for Panel E:
+Plot a heatmap of *k*-mer similarity scores across fragments of *XIST*-like lncRNAs of interest. Use *k* = 3 for ease of visualizing individual *k*-mers.
 
 ```
 seekr_norm_vectors v43_canonical.fa -k 3 -mv mean_3mers.npy -sv std_3mers.npy
@@ -114,7 +113,9 @@ seekr_kmer_counts select_lncs.fa -k 3 -mv mean_3mers.npy -sv std_3mers.npy -o se
 seekr_kmer_heatmap select_lnc_3mers.csv 0 3 -th 1 -cr '#fcfc03,#ffffff,#1907e6' -distm correlation -linkm complete -wratio 0.3 -hratio 0.3 -xts 16 -yts 16 -cfs 16 -o select_lnc_3mers -hf pdf -hd 300
 ```
 
-Code for Panel F:
+#### Panel F
+
+Plot a barplot of most-enriched *k*-mers across fragments of *XIST*-like lncRNAs of interest. Use *k* = 3 for ease of visualizing individual *k*-mers.
 
 ```
 seekr_norm_vectors v43_canonical.fa -k 3 -mv mean_3mers.npy -sv std_3mers.npy
@@ -122,7 +123,9 @@ seekr_norm_vectors v43_canonical.fa -k 3 -mv mean_3mers.npy -sv std_3mers.npy
 seekr_kmer_msd_barplot select_lncs.fa mean_3mers.npy std_3mers.npy 3 -l Log2.post -ss mean -sm descending -tn 10 -xls 20 -yls 20 -xts 20 -yts 20 -o select_lncs_msd_barplot3 -pf pdf -d 300
 ```
 
-Code for Panel G:
+#### Panel G
+
+Plot a barplot of most variable *k*-mers across fragments of *XIST*-like lncRNAs of interest. Use *k* = 3 for ease of visualizing individual *k*-mers.
 
 ```
 seekr_norm_vectors v43_canonical.fa -k 3 -mv mean_3mers.npy -sv std_3mers.npy
@@ -130,11 +133,9 @@ seekr_norm_vectors v43_canonical.fa -k 3 -mv mean_3mers.npy -sv std_3mers.npy
 seekr_kmer_count_barplot select_lncs.fa mean_3mers.npy std_3mers.npy 3 -l Log2.post -sm descending -tn 10 -xls 20 -yls 20 -xts 20 -yts 20 -ls 12 -o select_lncs_barplot3 -pf pdf -d 300
 ```
 
-#### Panel H I and S1
+#### Panel H
 
-We also unexpectedly observed that many of the 500nt chunks within XIST’s final exon were significantly more similar to each other than would be expected by chance (Figures 2H, 2I, and S1).
-
-Code for Panel H:
+Compare *k*-mer similarity among fragments of *XIST* at *k*-mer length *k* = 4. Calculate p-values and plot them in a heatmap.
 
 ```
 seekr_norm_vectors v43_can500_namedchunks_500.fa -k 4 -mv mean_4mers.npy -sv std_4mers.npy
@@ -144,13 +145,17 @@ seekr_find_pval XIST_manual_chunks.fa XIST_manual_chunks.fa mean_4mers.npy std_4
 seekr_kmer_heatmap X_v_X_pvals.csv 0 1 -th 0.05 -cr '#1b7837,#ffffff,#c51b7d' -distm correlation -linkm complete -wratio 0.4 -hratio 0.3 -xts 16 -yts 16 -cfs 16 -o X_v_X_pvals -hf pdf -hd 300
 ```
 
-Code for Panel I:
+#### Panel I
+
+Compare *k*-mer similarity among fragments of *XIST* at *k*-mer length *k* = 4. From p-values calculated above, create a dendrogram of fragment similarities across *XIST*.
 
 ```
 seekr_kmer_dendrogram X_v_X_pvals.csv -dd column -distm correlation -linkm complete -ph 8 -wratio 0.5 -lfs 16 -o X_v_X_dendrogram -pf pdf -d 300
 ```
 
-Code for Panel S1:
+#### Panel S1
+
+Compare *k*-mer similarity among fragments of *XIST* at *k*-mer length *k* = 4 and use Leiden to assign fragments to communities.
 
 ```
 seekr_norm_vectors v43_can500_namedchunks_500.fa -k 4 -mv mean_4mers.npy -sv std_4mers.npy
@@ -162,9 +167,9 @@ The result files: XIST_manual_chunks_nodes_leiden.csv and XIST_manual_chunks_edg
 
 ### Table 2 and Table S2
 
-Given that the tandem repeats within XIST are some of the regions most essential for its ability to induce and maintain gene silencing, we used SEEKR to perform a parallel search for XIST-like lncRNAs among the set of GENCODE canonical lncRNAs. In this search, we separated all 15,993 GENCODE canonical lncRNAs into ~500nt fragments, and then used SEEKR to identify lncRNAs containing fragments that harbored significant k-mer similarity to XIST Repeats A, B, D, E, and F (p-value of <0.05).
+Fragment GENCODE canonical lncRNAs into ~500nt chunks and compare each GENCODE lncRNA chunk to each *XIST* Repeat, using *k*-mer *k* = 4. Calculate p values of similarity using GENCODE lncRNA chunks as background and fitting to a lognormal distribution.
 
-We then summed the number of XIST-similar fragments in each lncRNA and used these sums to rank lncRNAs by their overall XIST-likeness. This analysis identified several intriguing lncRNAs (TABLE; sup table).
+Define similarity as any fragment whose SEEKR-derived similarity to an *XIST* Repeat has a p value of less than 0.05. Tally the number of *XIST*-similar fragments in each lncRNA and used these sums to rank lncRNAs by their overall *XIST*-likeness.
 
 XIST_repeats.fa is also provided under this github repository.
 
@@ -184,7 +189,7 @@ The result file v43_chunks_v_ABDEF_pvals.csv is then processed in R with the cod
 
 #### Panel A
 
-For example, selecting the set of deduplicated “Ensembl_canonical” lncRNAs from GENCODE’s v43 lncRNA collection reduces the total number of lncRNA transcripts from 58,023 to 15,550.
+Select the set of deduplicated “Ensembl_canonical” lncRNAs that are greater than or equal to 500nt in length from the GENCODE v43 lncRNA collection.
 
 ```python
 from seekr import fasta
@@ -199,7 +204,7 @@ headers, seqs = filter_gencode.filter_gencode(fasta_path='v43_lncRNA.fa',
                                               rm_dup=True, outputname='v43_canonical')
 ```
 
-For example, comparing the human lncRNA XIST to that of another human lncRNA, KCNQ1OT1, using k-mer length of k=6 and the set of deduplicated “Ensembl_canonical” lncRNAs in GENCODE as a background set, we find that SEEKR returns a Pearson’s r value of 0.07, meaning that relative to the set of Ensembl_canonical lncRNAs the 6-mer profiles of XIST and KCNQ1OT1 exhibit a weak positive correlation (FIG).
+Compare the human lncRNA *XIST* to that of another human lncRNA, *KCNQ1OT1*, using *k*-mer length of *k* = 6 and the set of deduplicated >=500nt “Ensembl_canonical” lncRNAs in GENCODE as a background set.
 
 ```python
 from seekr.kmer_counts import BasicCounter
@@ -232,7 +237,7 @@ sim = seekrPearson(xist_count.counts,ot1_count.counts, outfile='XIST_vs_OT1.csv'
 
 #### Panel B
 
-SEEKR-derived Pearson’s r values for large sets of background sequences are often well-fit by log-normal distributions (Figure 1B).
+Fit Python’s ‘common10’ distributions to 100000 randomly selected pairwise comparisons of sequences from v43_canonical.fa using *k*-mer length *k* = 6.
 
 ```python
 from seekr import find_dist
@@ -247,11 +252,10 @@ v43_6dists = find_dist.find_dist(inputseq='v43_canonical.fa', k_mer=6,
 
 #### Panel C
 
-Continuing from the example above, we find that XIST and KCNQ1OT1 are more similar to each other than ~93% of sampled pairwise comparisons of GENCODE canonical lncRNAs, despite their low positive Pearson’s r value (p-value of 0.07; Figure 1C).
+Estimate a p value for the similarity between *XIST* and *KCNQ1OT1* using deduplicated GENCODE canonical lncRNAs as background and the best-fitting distribution from seekr_find_dist as the function to calculate significance.
 
-Moreover, with two additional commands, we find some ~1500 GENCODE canonical lncRNAs whose overall k-mer contents are more similar to XIST than KCNQ1OT1 (Supp_table). 
 
-The top ten most XIST-similar lncRNAs, along with their Benjamini-Hochberg adjusted p-values are shown in Table 1.
+Estimate p values for the similarity between *XIST* and all other GENCODE canonical lncRNAs.
 
 ```python
 from seekr import find_dist
@@ -301,7 +305,7 @@ The fragmented lncRNAs and XIST fasta file are also available: v43_can500_namedc
 
 #### Panel B to D
 
-Because data suggest Repeats A, B, D, E, and F are discrete functional domains, we evaluated each XIST Repeat as a single intact chunk and separated the intervening XIST intervals into ~500 chunks. From these analyses, we found that LINC00632, DLX6-AS1, and PCDH10-DT each harbor significant similarity to Repeat E but lack similarity to the other Repeats in XIST (Figures 2B-D). Moreover, LINC00632, DLX6-AS1, and PCDH10-DT each harbor significant similarity to chunks distributed across the final exon of XIST (Figures 2B-D).
+Fragment select *XIST*-like lncRNAs into ~500 nucleotide (nt) chunks and compare the chunks in each *XIST*-like lncRNA to each chunk within *XIST*. Evaluate each *XIST* Repeat as a single intact chunk and separate the intervening *XIST* intervals into ~500 chunks. 
 
 ```python
 from seekr.kmer_counts import BasicCounter
@@ -380,11 +384,9 @@ kmer_heatmap.kmer_heatmap(pcdh10_xist_pval, datamin=0, datamax=1, thresh_value=0
                           hformat='pdf', hdpi=300)
 ```
 
-#### Panel E to G
+#### Panel E
 
-A closer examination revealed that these similarities could be attributed to the uniform enrichment of k-mers rich in A and T nucleotides; whereas, k-mers rich in G and C nucleotides were among the most variably enriched (Figures 2E-G).
-
-Code for Panel E:
+Plot a heatmap of *k*-mer similarity scores across fragments of *XIST*-like lncRNAs of interest. Use *k* = 3 for ease of visualizing individual *k*-mers.
 
 ```python
 from seekr.kmer_counts import BasicCounter
@@ -417,7 +419,9 @@ kmer_heatmap.kmer_heatmap(slnc_count, datamin=0, datamax=3, thresh_value=1,
                           hformat='pdf', hdpi=300)
 ```
 
-Code for Panel F:
+#### Panel F
+
+Plot a barplot of most-enriched *k*-mers across fragments of *XIST*-like lncRNAs of interest. Use *k* = 3 for ease of visualizing individual *k*-mers.
 
 ```python
 from seekr.kmer_counts import BasicCounter
@@ -443,7 +447,9 @@ kmer_msd_barplot.kmer_msd_barplot(inputfile='select_lncs.fa',
                                   pformat='pdf', pdpi=300)
 ```
 
-Code for Panel G:
+#### Panel G
+
+Plot a barplot of most variable *k*-mers across fragments of *XIST*-like lncRNAs of interest. Use *k* = 3 for ease of visualizing individual *k*-mers.
 
 ```python
 from seekr.kmer_counts import BasicCounter
@@ -468,11 +474,9 @@ kmer_count_barplot.kmer_count_barplot(inputfile='select_lncs.fa',
                                       pformat='pdf', pdpi=300)
 ```
 
-#### Panel H I and S1
+#### Panel H
 
-We also unexpectedly observed that many of the 500nt chunks within XIST’s final exon were significantly more similar to each other than would be expected by chance (Figures 2H, 2I, and S1).
-
-Code for Panel H:
+Compare *k*-mer similarity among fragments of *XIST* at *k*-mer length *k* = 4. Calculate p-values and plot them in a heatmap.
 
 ```python
 from seekr.kmer_counts import BasicCounter
@@ -508,7 +512,9 @@ kmer_heatmap.kmer_heatmap(xist_xist_pval, datamin=0, datamax=1, thresh_value=0.0
                           hformat='pdf', hdpi=300)
 ```
 
-Code for Panel I:
+#### Panel I
+
+Compare *k*-mer similarity among fragments of *XIST* at *k*-mer length *k* = 4. From p-values calculated above, create a dendrogram of fragment similarities across *XIST*.
 
 ```python
 from seekr import kmer_dendrogram
@@ -520,7 +526,9 @@ kmer_dendrogram.kmer_dendrogram(xist_xist_pval, dendro_direct='column',
                                 pformat='pdf', pdpi=300)
 ```
 
-Code for Panel S1:
+#### Panel S1
+
+Compare *k*-mer similarity among fragments of *XIST* at *k*-mer length *k* = 4 and use Leiden to assign fragments to communities.
 
 ```python
 from seekr.kmer_counts import BasicCounter
@@ -547,9 +555,9 @@ The result files: XIST_manual_chunks_nodes_leiden.csv and XIST_manual_chunks_edg
 
 ### Table 2 and Table S2
 
-Given that the tandem repeats within XIST are some of the regions most essential for its ability to induce and maintain gene silencing, we used SEEKR to perform a parallel search for XIST-like lncRNAs among the set of GENCODE canonical lncRNAs. In this search, we separated all 15,993 GENCODE canonical lncRNAs into ~500nt fragments, and then used SEEKR to identify lncRNAs containing fragments that harbored significant k-mer similarity to XIST Repeats A, B, D, E, and F (p-value of <0.05).
+Fragment GENCODE canonical lncRNAs into ~500nt chunks and compare each GENCODE lncRNA chunk to each *XIST* Repeat, using *k*-mer *k* = 4. Calculate p values of similarity using GENCODE lncRNA chunks as background and fitting to a lognormal distribution.
 
-We then summed the number of XIST-similar fragments in each lncRNA and used these sums to rank lncRNAs by their overall XIST-likeness. This analysis identified several intriguing lncRNAs (TABLE; sup table).
+Define similarity as any fragment whose SEEKR-derived similarity to an *XIST* Repeat has a p value of less than 0.05. Tally the number of *XIST*-similar fragments in each lncRNA and used these sums to rank lncRNAs by their overall *XIST*-likeness.
 
 XIST_repeats.fa is also provided under this github repository.
 
@@ -602,3 +610,4 @@ If you use this work, please cite:
 ```
 Kirk, J. M., Kim, S. O., Inoue, K., Smola, M. J., Lee, D. M., Schertzer, M. D., … Calabrese, J. M. (2018). Functional classification of long non-coding RNAs by k -mer content. Nature Genetics, 50(10), 1474–1482. https://doi.org/10.1038/s41588-018-0207-8
 ```
+
