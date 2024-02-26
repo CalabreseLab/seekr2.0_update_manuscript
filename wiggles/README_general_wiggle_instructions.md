@@ -57,7 +57,7 @@ sbatch -t 24:00:00 -n 24 --mem=50G --error=std_err_%j.err --wrap="STAR --runThre
 
 You may want to downsample and merge your replicates if you plan to generate one wiggle per condition. Downsampling ensures that your replicates contribution equally to the final sample wiggle once you merge the replicates. You may elect to not downsample and merge your replicates if you are interested in identifying potential batch effect or hope to study variation between replicates via the final wiggle tracks.
 
-#### If you elect to downsample and merge
+### If you elect to downsample and merge
 You will need to run the `run_downsample_merge_1_30_24.sh` script using the following input format, run this for each set of replicates you wish to downsample:
 
 ```
@@ -78,7 +78,7 @@ This is due to the jobs running in tandem, and therefore the intial directory cr
 
 
 
-#### If you do not elect to downsample and merge
+### If you do not elect to downsample and merge
 
 
 You may want to filter your data - if so run: 
@@ -95,39 +95,39 @@ If you do not wish to filter your data, please run:
 **NECESSARY MODULE/SOFTWARE: samtools/1.18**
 You must now decide whether you want to split your data by strand. If you used a stranded RNA-seq kit (common post ~2016, but not guaranteed, you can look up your particular sequencing kit methods or contact the manufacturer if you are uncertain), it is generally recommended to split by strand for optimal visualization of the data in a wiggle track. 
 
-#### If you do not want to split by strand
-You may skip this step. Just note that wherever your final files are stored from the end of step 2 will be the path you input in step 4.
+### If you do not want to split by strand:
+You may skip this step. Just note that wherever your final files are stored from the end of [step 2](https://github.com/CalabreseLab/seekr2.0_update_manuscript/blob/main/wiggles/README_general_wiggle_instructions.md#2-downsample-and-merge-replicates) will be the path you input in [step 4](https://github.com/CalabreseLab/seekr2.0_update_manuscript/blob/main/wiggles/README_general_wiggle_instructions.md#4-make-bed12-files).
 
 
-#### If you do want to split by strand
+### If you do want to split by strand:
 
-#### A. You must determine whether your data is paired-end or unpaired.  
+**A. You must determine whether your data is paired-end or unpaired.** 
 If you performed the alignment step yourself, you should already know this, but please confirm whether your data is paired or unpaired if you are using downloaded alignments from online resources. This can be done by studying the SAM flags, located in column 2 in the body of the SAM file. I recommend using this site (https://broadinstitute.github.io/picard/explain-flags.html) to decode your SAM flag values. If the reads are paired, this will be indicated by the checked boxes relevant to the SAM flag property. Please try multiple flags to confirm consistency throughout your alignment.
 
-#### B. You must determine whether your data is reverse-stranded.  
+**B. You must determine whether your data is reverse-stranded.**  
 This can also be done from the SAM flags. Using the same website, identify the combinations of boxes that are checked from the various flags in your SAM alignment file.
-##### If you have paired-end data:   
+#### If you have paired-end data:   
 						'first in pair' & 'read reverse strand' = 80
 						'second in pair' & 'read reverse strand' = 144
 						'first in pair' & 'mate reverse strand' = 96
 						'second in pair' & 'mate reverse strand' = 160
 
-##### If you have unpaired data:	
+#### If you have unpaired data:	
 As far as I know, this is impossible to determine retroactively without external documentation or your prior processing of the data. If you still do not know, I recommend assuming that your data is NOT reverse stranded as this is decomplicates how you will interpret the SAM flags in post-processing. (With reverse-stranded data you must flip the SAM flag interpretations which can become confusing). If you make the wiggles and discover that your data *is* reverse-stranded, you can simply change the labels then or come back and re-run this for computational reproducability. 
 
 
-#### C. Using the information you obtained above:
-###### You may wish to filter your data as you split by strand
+**C. Using the information you obtained above:**  
+#### You may wish to filter your data as you split by strand
 If so, run:
 ```
 sbatch samtools_filter_binarize_split_strand_1_30_24.sh <paired/unpaired> <forward/reversed> </path/to/bamfiles/>
 ```
-##### You may not wish to filter your data as you split by strand
+#### You may not wish to filter your data as you split by strand
 If so, run:
 ```
 sbatch samtools_binarize_split_strand_1_30_24.sh <paired/unpaired> <forward/reversed> </path/to/bamfiles/>
 ```
-Depending on your previous step 3 choice, you may have already filitered your data, and could thus run either script here. 
+Depending on your previous [step 3](https://github.com/CalabreseLab/seekr2.0_update_manuscript/blob/main/wiggles/README_general_wiggle_instructions.md#3-split-strands) choice, you may have already filitered your data, and could thus run either script here. 
 
 
 
@@ -142,7 +142,7 @@ We must now convert our BAM files into BED12 files to begin making the wiggles. 
 bash bam_to_bed12_1_30_24.sh </path/to/previous/bamfiles>
 ```
 
-If you split by strand, this will be your path to the strands/ directory. If you did not, then it will be the path to your output from the end of step 2.
+If you split by strand, this will be your path to the strands/ directory. If you did not, then it will be the path to your output from the end of [step 2](https://github.com/CalabreseLab/seekr2.0_update_manuscript/blob/main/wiggles/README_general_wiggle_instructions.md#2-downsample-and-merge-replicates).
 
 
 
@@ -150,7 +150,7 @@ If you split by strand, this will be your path to the strands/ directory. If you
 
 
 ## 5. Standardize Signal by Read Counts  
-**NECESSARY MODULES/SOFTWARE: samtools/1.18**
+**NECESSARY MODULES/SOFTWARE: samtools/1.18**  
 If you would like to compare the signal between wiggle tracks (to compare conditions), it is important to standardize by the number of aligned reads in the dataset. If you do wish to standardize your wiggle track signal, run:
 ```
 bash run_count_reads_1_30_24.sh </path/to/bam/files>
@@ -167,15 +167,15 @@ If you do not wish to do so, please skip this step.
 Next, make the input for the wiggle script. There are several things that must be specified about the data, though some of this can be automated for your convenience:
 
 
-**1. Path and name of each sample's BED12 file**
-**2. The path to the chrNameLength.txt file.** This is generated by STAR during genome indexing and is stored in the genomeDir/ directory if you made the index from step 1.*
-**3. Header for output files to be displayed in genome browser**, often short yet descriptive. Use underscores, I recommend specifying if this a +/- stranded, experiment/control dataset in the name along with any other relevant conditions or assay targets.
-**4. Color of the wiggle track** (I like to use separate colors for +/- stranded wiggles for easy visualization)
-**5. Whether to log10 normalize the data**: 'y' for log10 normalization, 'n' for no log10 normalization
-**6. Bin size for the wiggle track** (50 nucleotides is our standard size)
-**7. Number of reads in the sample's alignment from the result of step 6 for the sample.** If you skipped step 5 and do not wish to standardize, put the value 1 here.
+**1. Path and name of each sample's BED12 file**  
+**2. The path to the chrNameLength.txt file.** This is generated by STAR during genome indexing and is stored in the genomeDir/ directory if you made the index from [step 1](https://github.com/CalabreseLab/seekr2.0_update_manuscript/blob/main/wiggles/README_general_wiggle_instructions.md#1-align-seq-data), otherwise see bulleted note below.  
+**3. Header for output files to be displayed in genome browser**, often short yet descriptive. Use underscores, I recommend specifying if this a +/- stranded, experiment/control dataset in the name along with any other relevant conditions or assay targets.  
+**4. Color of the wiggle track** (I like to use separate colors for +/- stranded wiggles for easy visualization)  
+**5. Whether to log10 normalize the data**: 'y' for log10 normalization, 'n' for no log10 normalization  
+**6. Bin size for the wiggle track** (50 nucleotides is our standard size)  
+**7. Number of reads in the sample's alignment from the result of [step 6](https://github.com/CalabreseLab/seekr2.0_update_manuscript/blob/main/wiggles/README_general_wiggle_instructions.md#6-wiggle-script-input) for the sample.** If you skipped [step 5](https://github.com/CalabreseLab/seekr2.0_update_manuscript/blob/main/wiggles/README_general_wiggle_instructions.md#5-standardize-signal-by-read-counts) and do not wish to standardize, put the value 1 here.  
 
-* If you did not use STAR to align your data and do not have access to a STAR genome index for your organism, you can make a chrNameLength.txt by listing the name of each chromosome in "chr#" format on every line, followed by the chromosome length in nucleotides. These should be tab separated.
+* If you did not use STAR to align your data and do not have access to a STAR genome index for your organism, you can make a chrNameLength.txt by listing the name of each chromosome in "chr#" format on every line, followed by the chromosome length in nucleotides. These should be tab separated.  
 
 ### Automatic Input Generation
 To generate the serial job submission instructions for each sample automatically, you may be able to run make_wiggle_script_input_1_30_24.sh. This will still require a bit of knowledge about your processing preferences of 1-7 above.
@@ -191,7 +191,7 @@ sbatch make_wiggle_script_input_1_30_24.sh bedfiles/ /proj/seq/data/STAR_genomes
 If 'stranded', then colors will be assigned red for + and blue for -. You can manually change the color assignments in this step, if desired. If the 'stranded' parameter is provided, the script expects to find "_+" and "_-" in the file name to determine strandedness and will flag an error otherwise.
 
 
-Running the above will create the shell script to be used in step 7: `run_wiggle_script.sh`
+Running the above will create the shell script to be used in [step 7](https://github.com/CalabreseLab/seekr2.0_update_manuscript/blob/main/wiggles/README_general_wiggle_instructions.md#7-run-wiggle-script): `run_wiggle_script.sh`
 
 ### Manual Input Generation
 If you want to create the input file run instructions manually, use the following format for each wiggle track:
@@ -244,9 +244,9 @@ Congratulations on generating your wiggle tracks successfully! If you have more 
 bash make_bigwigs_1_30_24.sh </path/to/chrNameLength.txt> </path/to/wiggle/files/>
 ```
 
-examples:
+Examples:
 ```
 bash make_bigwigs_1_30_24.sh genomeDir/chrNameLength.txt ./wiggle_outputs/
 bash make_bigwigs_1_30_24.sh genomeDir/chrNameLength.txt ./
 ```
-the last one is if you did not relocate your wiggles into a subdirectory.
+The last example would be used if you did not relocate your wiggles into a subdirectory.
