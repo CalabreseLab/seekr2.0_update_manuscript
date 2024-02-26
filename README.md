@@ -652,7 +652,7 @@ bash make_bigwigs_1_30_24.sh </path/to/chrNameLength.txt> control_normalized_wig
 
 ### Developing Wiggles from Your Own Data
 
-If you are interested in generating wiggle scripts for your own sequencing data, more information can be found in [README_general_wiggle_instructions.txt](wiggles/README_general_wiggle_instructions.txt) file in the wiggles/ directory.
+If you are interested in generating wiggle scripts for your own sequencing data, more information can be found in [README_general_wiggle_instructions.md](wiggles/README_general_wiggle_instructions.md) file in the wiggles/ directory.
 
 
 ## Issues and Help
