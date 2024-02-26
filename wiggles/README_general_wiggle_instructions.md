@@ -1,19 +1,18 @@
 # Wiggle Track Generation Pipeline
-Date: 2/26/24
-Author: Quinn Eberhard
-Lab: Mauro Calabrese
+Date: 2/26/24  
+Author: Quinn Eberhard  
+Lab: Mauro Calabrese  
 
 ## Introduction
 
-Welcome to our new and improved Wiggle Track generation pipeline. This tutorial will walk you through how to turn your sequencing data into a wiggle script, and if desired, to convert them to bigWigs. Many steps here specify `sbatch` processes, so this is highly recommended for use on a cluster and has not been tested for local machines.
+Welcome to the Wiggle Track generation pipeline. This tutorial will walk you through how to turn your sequencing data into a wiggle script, and if desired, to convert them to bigWigs. Many steps here specify `sbatch` processes, so this is highly recommended for use on a cluster and has not been tested for local machines.
 
 Versions of software used are more for reference than a version-adherence requirement (ex: I have run this with both samtools/1.18 and 1.19, both worked fine). Python 3 is required throughout this process. Please read through all steps even if you do not do them, as some formatting information is important for later steps.
 
 
 
 
-## Steps
-### 1. Align Seq Data
+## 1. Align Seq Data
 **NECESSARY MODULES/SOFTWARE: star/2.7.10a**
 
 Begin by aligning each replicate. For this example, I use STAR to build the genome index:
@@ -32,7 +31,7 @@ STAR --runThreadN 8 --runMode genomeGenerate --genomeDir genomeDir --genomeFasta
 
 And once this completes, run the aligment step.
 
-If you have **PAIRED-END** data:
+#### If you have **PAIRED-END** data:
 
 ```
 sbatch -t 24:00:00 -n 24 --mem=50G --error=std_err_%j.err --wrap="STAR --runThreadN 8 --genomeDir genomeDir/ --outFileNamePrefix <path_to_outfile_directory_and_outfile_name> --readFilesIn <path_to_read_1.fastq> <path_to_read_2.fastq>"
@@ -43,7 +42,7 @@ A real paired-end example:
 sbatch -t 24:00:00 -n 24 --mem=50G --error=std_err_%j.err --wrap="STAR --runThreadN 8 --genomeDir genomeDir/ --outFileNamePrefix ./alignments/GSE158901_SRR12762158 --readFilesIn GSE158901/SRR12762158_pass_1.fastq GSE158901/SRR12762158_pass_2.fastq"
 ```
 
-If your data in **UNPAIRED**:
+#### If your data is **UNPAIRED**:
 ```
 sbatch -t 24:00:00 -n 24 --mem=50G --error=std_err_%j.err --wrap="STAR --runThreadN 8 --genomeDir genomeDir/ --outFileNamePrefix <path_to_outfile_directory_and_outfile_name> --readFilesIn <path_to_read_1.fastq>"
 ```
@@ -53,7 +52,7 @@ sbatch -t 24:00:00 -n 24 --mem=50G --error=std_err_%j.err --wrap="STAR --runThre
 
 
 
-### 2. Downsample and Merge Replicates
+## 2. Downsample and Merge Replicates
 **NECESSARY MODULES/SOFTWARE: samtools/1.18**
 
 You may want to downsample and merge your replicates if you plan to generate one wiggle per condition. Downsampling ensures that your replicates contribution equally to the final sample wiggle once you merge the replicates. You may elect to not downsample and merge your replicates if you are interested in identifying potential batch effect or hope to study variation between replicates via the final wiggle tracks.
@@ -92,48 +91,50 @@ If you do not wish to filter your data, please run:
 
 
 
-### 3. Split Strands
+## 3. Split Strands
 **NECESSARY MODULE/SOFTWARE: samtools/1.18**
 You must now decide whether you want to split your data by strand. If you used a stranded RNA-seq kit (common post ~2016, but not guaranteed, you can look up your particular sequencing kit methods or contact the manufacturer if you are uncertain), it is generally recommended to split by strand for optimal visualization of the data in a wiggle track. 
 
 #### If you do not want to split by strand
-	You may skip this step. Just note that wherever your final files are stored from the end of step 2 will be the path you input in step 4.
+You may skip this step. Just note that wherever your final files are stored from the end of step 2 will be the path you input in step 4.
 
 
 #### If you do want to split by strand
 
-	##### A. You must determine whether your data is paired-end or unpaired. If you performed the alignment step yourself, you should already know this, but please confirm whether your data is paired or unpaired if you are using downloaded alignments from online resources. This can be done by studying the SAM flags, located in column 2 in the body of the SAM file. I recommend using this site (https://broadinstitute.github.io/picard/explain-flags.html) to decode your SAM flag values. If the reads are paired, this will be indicated by the checked boxes relevant to the SAM flag property. Please try multiple flags to confirm consistency throughout your alignment.
+#### A. You must determine whether your data is paired-end or unpaired.  
+If you performed the alignment step yourself, you should already know this, but please confirm whether your data is paired or unpaired if you are using downloaded alignments from online resources. This can be done by studying the SAM flags, located in column 2 in the body of the SAM file. I recommend using this site (https://broadinstitute.github.io/picard/explain-flags.html) to decode your SAM flag values. If the reads are paired, this will be indicated by the checked boxes relevant to the SAM flag property. Please try multiple flags to confirm consistency throughout your alignment.
 
-	##### B. You must determine whether your data is reverse-stranded. This can also be done from the SAM flags. Using the same website, identify the combinations of boxes that are checked from the various flags in your SAM alignment file.
-		###### If you have paired-end data:   
+#### B. You must determine whether your data is reverse-stranded.  
+This can also be done from the SAM flags. Using the same website, identify the combinations of boxes that are checked from the various flags in your SAM alignment file.
+##### If you have paired-end data:   
 						'first in pair' & 'read reverse strand' = 80
 						'second in pair' & 'read reverse strand' = 144
 						'first in pair' & 'mate reverse strand' = 96
 						'second in pair' & 'mate reverse strand' = 160
 
-		###### If you have unpaired data:	
-		As far as I know, this is impossible to determine retroactively without external documentation or your prior processing of the data. If you still do not know, I recommend assuming that your data is NOT reverse stranded as this is decomplicates how you will interpret the SAM flags in post-processing. (With reverse-stranded data you must flip the SAM flag interpretations which can become confusing). If you make the wiggles and discover that your data *is* reverse-stranded, you can simply change the labels then or come back and re-run this for computational reproducability. 
+##### If you have unpaired data:	
+As far as I know, this is impossible to determine retroactively without external documentation or your prior processing of the data. If you still do not know, I recommend assuming that your data is NOT reverse stranded as this is decomplicates how you will interpret the SAM flags in post-processing. (With reverse-stranded data you must flip the SAM flag interpretations which can become confusing). If you make the wiggles and discover that your data *is* reverse-stranded, you can simply change the labels then or come back and re-run this for computational reproducability. 
 
 
-	##### C. Using the information you obtained above:
-		###### You may wish to filter your data as you split by strand
-		If so, run:
-		```
-		sbatch samtools_filter_binarize_split_strand_1_30_24.sh <paired/unpaired> <forward/reversed> </path/to/bamfiles/>
-		```
-		###### You may not wish to filter your data as you split by strand
-		If so, run:
-		```
-		sbatch samtools_binarize_split_strand_1_30_24.sh <paired/unpaired> <forward/reversed> </path/to/bamfiles/>
-		```
-		Depending on your previous step 3 choice, you may have already filitered your data, and could thus run either script here. 
-
-
-
+#### C. Using the information you obtained above:
+###### You may wish to filter your data as you split by strand
+If so, run:
+```
+sbatch samtools_filter_binarize_split_strand_1_30_24.sh <paired/unpaired> <forward/reversed> </path/to/bamfiles/>
+```
+##### You may not wish to filter your data as you split by strand
+If so, run:
+```
+sbatch samtools_binarize_split_strand_1_30_24.sh <paired/unpaired> <forward/reversed> </path/to/bamfiles/>
+```
+Depending on your previous step 3 choice, you may have already filitered your data, and could thus run either script here. 
 
 
 
-### 4. Make BED12 Files
+
+
+
+## 4. Make BED12 Files
 **NECESSARY MODULES/SOFTWARE: bedtools/2.29**
 
 We must now convert our BAM files into BED12 files to begin making the wiggles. This can be done with:
@@ -148,7 +149,7 @@ If you split by strand, this will be your path to the strands/ directory. If you
 
 
 
-### 5. Standardize Signal by Read Counts
+## 5. Standardize Signal by Read Counts  
 **NECESSARY MODULES/SOFTWARE: samtools/1.18**
 If you would like to compare the signal between wiggle tracks (to compare conditions), it is important to standardize by the number of aligned reads in the dataset. If you do wish to standardize your wiggle track signal, run:
 ```
@@ -162,7 +163,7 @@ If you do not wish to do so, please skip this step.
 
 
 
-### 6. Wiggle Script Input
+## 6. Wiggle Script Input
 Next, make the input for the wiggle script. There are several things that must be specified about the data, though some of this can be automated for your convenience:
 
 
@@ -176,7 +177,7 @@ Next, make the input for the wiggle script. There are several things that must b
 
 * If you did not use STAR to align your data and do not have access to a STAR genome index for your organism, you can make a chrNameLength.txt by listing the name of each chromosome in "chr#" format on every line, followed by the chromosome length in nucleotides. These should be tab separated.
 
-#### Automatic Input Generation
+### Automatic Input Generation
 To generate the serial job submission instructions for each sample automatically, you may be able to run make_wiggle_script_input_1_30_24.sh. This will still require a bit of knowledge about your processing preferences of 1-7 above.
 ``
 sbatch make_wiggle_script_input_1_30_24.sh </path/to/bed12/files/> </path/to/chrNameLength.txt> <stranded/unstranded> <log norm: y or n> <bin size i.e. 50> </path/to/readcounts/ OR 1>
@@ -192,7 +193,7 @@ If 'stranded', then colors will be assigned red for + and blue for -. You can ma
 
 Running the above will create the shell script to be used in step 7: `run_wiggle_script.sh`
 
-#### Manual Input Generation
+### Manual Input Generation
 If you want to create the input file run instructions manually, use the following format for each wiggle track:
 ```
 sbatch --wrap="python3 make_wiggle_tracks_1_11_24.py <bed_file_path/bedfile> <path/to/chrNameLength.txt> <header> <color in R,G,B> <lognormalize y or n> <bin_size> <number of readcount for sample's alignment OR 1>"
@@ -210,7 +211,7 @@ You could submit these individually in terminal or by writing the commands line 
 
 
 
-### 7. Run Wiggle Script
+## 7. Run Wiggle Script
 To run the `make_wiggle_tracks_1_11_24.py` script, use the previously generated input file. If you automatically generated this in the previous step, simply run:
 ```
 bash  run_wiggle_script.sh
@@ -223,7 +224,7 @@ The wiggles will develop in the present working directory. Once they have comple
 
 
 
-### 8. Optional: Normalize Wiggle Signal to Controls
+## 8. Optional: Normalize Wiggle Signal to Controls
 If you have a control sample that you would like to normalize your experimental samples to, you can run the following script. This will generate a new wiggle file for each experimental sample that is normalized to the paired control sample. This is an alternative to viewing the experimental wiggle and the control wiggle in the browser together and may provide a more simplified visualization of the data. Your wiggles should have been scaled by read counts.
 
 For each combination of experiment and control sample, run:
@@ -236,8 +237,8 @@ sbatch --wrap="python3 control_normalize_wiggles_2_20_24.py <path/to/experimenta
 
 
 
-### 9. Make bigWigs
-**MANDATORY MODULES/SOFTWARE: ucsctools/320**
+## 9. Optional: Make bigWigs
+**NECESSARY MODULES/SOFTWARE: ucsctools/320**
 Congratulations on generating your wiggle tracks successfully! If you have more than a few and want to be able to upload a view them all relatively quickly, I recommend converting them to bigWigs and using a TrackHub. To convert to bigWigs, run:
 ```
 bash make_bigwigs_1_30_24.sh </path/to/chrNameLength.txt> </path/to/wiggle/files/>
@@ -248,4 +249,4 @@ examples:
 bash make_bigwigs_1_30_24.sh genomeDir/chrNameLength.txt ./wiggle_outputs/
 bash make_bigwigs_1_30_24.sh genomeDir/chrNameLength.txt ./
 ```
-# the last one is if you did not relocate your wiggles into a subdirectory.
+the last one is if you did not relocate your wiggles into a subdirectory.
