@@ -10,7 +10,7 @@ Versions of software noted are more for reference than a version-adherence requi
 
 
 # SLURM Compute Cluster Instructions  
-The scripts found in this section will be located in the [wiggles/](wiggles/) directory or in [wiggles/slurm_compute_cluster_scripts/](wiggles/slurm_compute_cluster_scripts/)  
+The scripts found in this section will be located in the `wiggles/` directory or in [wiggles/slurm_compute_cluster_scripts/](slurm_compute_cluster_scripts/)  
 ## 1. Align Seq Data
 **NECESSARY MODULES/SOFTWARE: star/2.7.10a**
 
@@ -57,7 +57,7 @@ sbatch -t 24:00:00 -n 24 --mem=50G --error=std_err_%j.err --wrap="STAR --runThre
 You may want to downsample and merge your replicates if you plan to generate one wiggle per condition. Downsampling ensures that your replicates contribution equally to the final sample wiggle once you merge the replicates. You may elect to not downsample and merge your replicates if you are interested in identifying potential batch effect or hope to study variation between replicates via the final wiggle tracks, or if you simply do not have replicates.
 
 ### If you elect to downsample and merge
-You will need to run the [run_downsample_merge_2_26_24.sh](wiggles/run_downsample_merge_2_26_24.sh) script using the following input format, run this for each set of replicates you wish to downsample:
+You will need to run the [run_downsample_merge_2_26_24.sh](run_downsample_merge_2_26_24.sh) script using the following input format, run this for each set of replicates you wish to downsample:
 
 ```
 sbatch run_downsample_merge_2_26_24.sh </path/to/file/replicate_1.bam>,</path/to/file/replicate_2.bam> <descriptive name of experiment>
@@ -261,8 +261,8 @@ The last example would be used if you did not relocate your wiggles into a subdi
 
 
 # Local Unix Compute Instructions  
-The scripts found in this section will be located in the [wiggles/](wiggles/) directory, or if the final name ends in 'local' they are located in [wiggles/local_unix_scripts/](wiggles/local_unix_scripts/)  
-## 1. Align Seq Data
+The scripts found in this section will be located in the `wiggles/` directory, or if the final name ends in 'local' they are located in [wiggles/local_unix_scripts/](local_unix_scripts/)  
+## 1. Align Seq Data - Local  
 **NECESSARY MODULES/SOFTWARE: star/2.7.10a**
 
 Begin by aligning each replicate. For this example, I use STAR to build the genome index, note that this can require many GB of free RAM to run depending on the size of your genome.
@@ -299,13 +299,13 @@ STAR --runThreadN 8 --genomeDir genomeDir/ --outFileNamePrefix <path_to_outfile_
 
 
 
-## 2. Downsample and Merge Replicates
+## 2. Downsample and Merge Replicates - Local  
 **NECESSARY MODULES/SOFTWARE: samtools/1.18**
 
 You may want to downsample and merge your replicates if you plan to generate one wiggle per condition. Downsampling ensures that your replicates contribution equally to the final sample wiggle once you merge the replicates. You may elect to not downsample and merge your replicates if you are interested in identifying potential batch effect or hope to study variation between replicates via the final wiggle tracks, or if you simply do not have replicates.
 
 ### If you elect to downsample and merge
-You will need to run the [run_downsample_merge_2_26_24.sh](wiggles/run_downsample_merge_2_26_24.sh) script using the following input format, run this for each set of replicates you wish to downsample:
+You will need to run the [run_downsample_merge_2_26_24.sh](run_downsample_merge_2_26_24.sh) script using the following input format, run this for each set of replicates you wish to downsample:
 
 ```
 bash run_downsample_merge_2_26_24.sh </path/to/file/replicate_1.bam>,</path/to/file/replicate_2.bam> <descriptive name of experiment>
@@ -335,13 +335,13 @@ bash samtools_sam_to_bam_2_27_24_local.sh </path/to/samfiles/>
 
 
 
-## 3. Split Strands
+## 3. Split Strands - Local  
 **NECESSARY MODULE/SOFTWARE: samtools/1.18**
 
 You must now decide whether you want to split your data by strand. If you used a stranded RNA-seq kit (common post ~2016, but not guaranteed, you can look up your particular sequencing kit methods or contact the manufacturer if you are uncertain), it is generally recommended to split by strand for optimal visualization of the data in a wiggle track. 
 
 ### If you do not want to split by strand:
-You may skip this step. Just note that wherever your final files are stored from the end of [step 2](https://github.com/CalabreseLab/seekr2.0_update_manuscript/blob/main/wiggles/README_general_wiggle_instructions.md#2-downsample-and-merge-replicates) will be the path you input in [step 4](https://github.com/CalabreseLab/seekr2.0_update_manuscript/blob/main/wiggles/README_general_wiggle_instructions.md#4-make-bed12-files).
+You may skip this step. Just note that wherever your final files are stored from the end of [step 2](https://github.com/CalabreseLab/seekr2.0_update_manuscript/blob/main/wiggles/README_general_wiggle_instructions.md#2-downsample-and-merge-replicates---local) will be the path you input in [step 4](https://github.com/CalabreseLab/seekr2.0_update_manuscript/blob/main/wiggles/README_general_wiggle_instructions.md#4-make-bed12-files---local).
 
 
 ### If you do want to split by strand:
@@ -372,14 +372,14 @@ If so, run:
 ```
 bash samtools_binarize_split_strand_2_27_24_local.sh <paired/unpaired> <forward/reversed> </path/to/bamfiles/>
 ```
-Depending on your previous [step 3](https://github.com/CalabreseLab/seekr2.0_update_manuscript/blob/main/wiggles/README_general_wiggle_instructions.md#3-split-strands) choice, you may have already filtered your data, and could thus run either script here. 
+Depending on your previous [step 3](https://github.com/CalabreseLab/seekr2.0_update_manuscript/blob/main/wiggles/README_general_wiggle_instructions.md#3-split-strands---local) choice, you may have already filtered your data, and could thus run either script here. 
 
 
 
 
 
 
-## 4. Make BED12 Files
+## 4. Make BED12 Files - Local  
 **NECESSARY MODULES/SOFTWARE: bedtools/2.29**
 
 We must now convert our BAM files into BED12 files to begin making the wiggles. This can be done with:
@@ -387,14 +387,14 @@ We must now convert our BAM files into BED12 files to begin making the wiggles. 
 bash bam_to_bed12_2_27_24_local.sh </path/to/previous/bamfiles>
 ```
 
-If you split by strand, this will be your path to the strands/ directory. If you did not, then it will be the path to your output from the end of [step 2](https://github.com/CalabreseLab/seekr2.0_update_manuscript/blob/main/wiggles/README_general_wiggle_instructions.md#2-downsample-and-merge-replicates).
+If you split by strand, this will be your path to the strands/ directory. If you did not, then it will be the path to your output from the end of [step 2](https://github.com/CalabreseLab/seekr2.0_update_manuscript/blob/main/wiggles/README_general_wiggle_instructions.md#2-downsample-and-merge-replicates---local).
 
 
 
 
 
 
-## 5. Standardize Signal by Read Counts  
+## 5. Standardize Signal by Read Counts - Local   
 **NECESSARY MODULES/SOFTWARE: samtools/1.18**
 
 If you would like to compare the signal between wiggle tracks (to compare conditions), it is important to standardize by the number of aligned reads in the dataset. If you do wish to standardize your wiggle track signal, run:
@@ -409,22 +409,22 @@ If you do not wish to do so, please skip this step.
 
 
 
-## 6. Wiggle Script Input
+## 6. Wiggle Script Input - Local  
 Next, make the input for the wiggle script. There are several things that must be specified about the data, though some of this can be automated for your convenience:
 
 
 **1. Path and name of each sample's BED12 file**  
-**2. The path to the chrNameLength.txt file.** This is generated by STAR during genome indexing and is stored in the genomeDir/ directory if you made the index from [step 1](https://github.com/CalabreseLab/seekr2.0_update_manuscript/blob/main/wiggles/README_general_wiggle_instructions.md#1-align-seq-data), otherwise see bulleted note below.  
+**2. The path to the chrNameLength.txt file.** This is generated by STAR during genome indexing and is stored in the genomeDir/ directory if you made the index from [step 1](https://github.com/CalabreseLab/seekr2.0_update_manuscript/blob/main/wiggles/README_general_wiggle_instructions.md#1-align-seq-data---local), otherwise see bulleted note below.  
 **3. Header for output files to be displayed in genome browser**, often short yet descriptive. Use underscores, I recommend specifying if this a +/- stranded, experiment/control dataset in the name along with any other relevant conditions or assay targets.  
 **4. Color of the wiggle track** (available colors: blue, red, green, yellow, orange, purple, pink, and black. It can be helpful to distinguish between different strands/treatments etc. by using separate colors)   
 **5. Whether to log10 normalize the data**: 'y' for log10 normalization, 'n' for no log10 normalization  
 **6. Bin size for the wiggle track** (50 nucleotides is our standard size)  
-**7. Number of reads in the sample's alignment from the result of [step 5](https://github.com/CalabreseLab/seekr2.0_update_manuscript/blob/main/wiggles/README_general_wiggle_instructions.md#5-standardize-signal-by-read-counts) for the sample.** If you skipped step 5 and do not wish to standardize, put the value 1 here.  
+**7. Number of reads in the sample's alignment from the result of [step 5](https://github.com/CalabreseLab/seekr2.0_update_manuscript/blob/main/wiggles/README_general_wiggle_instructions.md#5-standardize-signal-by-read-counts---local) for the sample.** If you skipped step 5 and do not wish to standardize, put the value 1 here.  
 
 * If you did not use STAR to align your data and do not have access to a STAR genome index for your organism, you can make a chrNameLength.txt by listing the name of each chromosome in "chr#" format on every line, followed by the chromosome length in nucleotides. These should be tab separated.  
 
 ### Automatic Input Generation
-To generate the input commands for each sample automatically, you may be able to run [make_wiggle_script_input_2_27_24_local.sh](wiggles/local_unix_scripts/make_wiggle_script_input_2_27_24_local.sh). This will still require a bit of knowledge about your processing preferences of 1-7 above.
+To generate the input commands for each sample automatically, you may be able to run [make_wiggle_script_input_2_27_24_local.sh](local_unix_scripts/make_wiggle_script_input_2_27_24_local.sh). This will still require a bit of knowledge about your processing preferences of 1-7 above.
 ``
 bash make_wiggle_script_input_2_27_24_local.sh </path/to/bed12/files/> </path/to/chrNameLength.txt> <stranded/unstranded> <log norm: y or n> <bin size i.e. 50> </path/to/readcounts/ OR 1>
 ``
@@ -437,9 +437,9 @@ bash make_wiggle_script_input_2_27_24_local.sh bedfiles/ /proj/seq/data/STAR_gen
 If 'stranded', then colors will be assigned red for a positive strand, denoted "+" and blue for a negative strand, denoted "-". You can manually change the color assignments in the output of this step, if desired. If the 'stranded' parameter is provided, the script expects to find "_+" and "_-" in the file name to determine strandedness and will flag an error otherwise.
 
 
-Running the above will create the shell script to be used in [step 7](https://github.com/CalabreseLab/seekr2.0_update_manuscript/blob/main/wiggles/README_general_wiggle_instructions.md#7-run-wiggle-script): `run_wiggle_script.sh`
+Running the above will create the shell script to be used in [step 7](https://github.com/CalabreseLab/seekr2.0_update_manuscript/blob/main/wiggles/README_general_wiggle_instructions.md#7-run-wiggle-script---local): `run_wiggle_script.sh`
 
-### Manual Input Generation
+### Manual Input Generation - Local  
 If you want to create the input file run instructions manually, use the following format for each wiggle track:
 ```
 python3 make_wiggle_tracks_1_11_24.py <bed_file_path/bedfile> <path/to/chrNameLength.txt> <header> <color> <lognormalize y or n> <bin_size> <number of readcount for sample's alignment OR 1>
@@ -457,8 +457,8 @@ You could submit these individually in terminal or by writing the commands line 
 
 
 
-## 7. Run Wiggle Script
-To run the [make_wiggle_tracks_1_11_24.py](wiggles/make_wiggle_tracks_1_11_24.py) script, use the previously generated input file or run each command individually. If you automatically generated this in the previous step, simply run:
+## 7. Run Wiggle Script - Local  
+To run the [make_wiggle_tracks_1_11_24.py](make_wiggle_tracks_1_11_24.py) script, use the previously generated input file or run each command individually. If you automatically generated this in the previous step, simply run:
 ```
 bash run_wiggle_script.sh
 ```
@@ -470,7 +470,7 @@ The wiggles will develop in the present working directory. Once they have comple
 
 
 
-## 8. Optional: Normalize Wiggle Signal to Controls
+## 8. Optional: Normalize Wiggle Signal to Controls - Local  
 If you have a control sample that you would like to normalize your experimental samples to, you can run the following script. This will generate a new wiggle file for each experimental sample that is normalized to the paired control sample. This is an alternative to viewing the experimental wiggle and the control wiggle in the browser together and may provide a more simplified visualization of the data. Your wiggles should have been scaled by read counts.
 
 For each combination of experiment and control sample, run:
@@ -483,7 +483,7 @@ python3 control_normalize_wiggles_2_20_24.py <path/to/experimental_wiggle.wig> <
 
 
 
-## 9. Optional: Make bigWigs
+## 9. Optional: Make bigWigs - Local  
 **NECESSARY MODULES/SOFTWARE: ucsctools/320**  
 
 Congratulations on generating your wiggle tracks successfully! If you have many wiggle tracks and want to be able to upload and view them all relatively quickly, I recommend converting them to bigWigs and using a TrackHub if available. To convert to bigWigs, run:
