@@ -439,7 +439,7 @@ If 'stranded', then colors will be assigned red for a positive strand, denoted "
 
 Running the above will create the shell script to be used in [step 7](https://github.com/CalabreseLab/seekr2.0_update_manuscript/blob/main/wiggles/README_general_wiggle_instructions.md#7-run-wiggle-script---local): `run_wiggle_script.sh`
 
-### Manual Input Generation - Local  
+### Manual Input Generation  
 If you want to create the input file run instructions manually, use the following format for each wiggle track:
 ```
 python3 make_wiggle_tracks_1_11_24.py <bed_file_path/bedfile> <path/to/chrNameLength.txt> <header> <color> <lognormalize y or n> <bin_size> <number of readcount for sample's alignment OR 1>
