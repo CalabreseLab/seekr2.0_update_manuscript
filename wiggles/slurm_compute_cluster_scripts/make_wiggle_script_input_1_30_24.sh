@@ -9,8 +9,6 @@ log_norm=$4 #y or n
 bin_size=$5
 readcount_path=$6 #either a path OR the value 1
 
-#chrNameLengthfile="/proj/seq/data/STAR_genomes_v277/GRCm38_p6_GENCODE_primary/chrNameLength.txt"
-#chrNameLengthfile="/proj/seq/data/STAR_genomes_v277/GRCh38_p13_GENCODE_primary/chrNameLength.txt"
 echo "#!/bin/bash" > run_wiggle_script.sh
 
 for file in $bedfile_path/*.bed

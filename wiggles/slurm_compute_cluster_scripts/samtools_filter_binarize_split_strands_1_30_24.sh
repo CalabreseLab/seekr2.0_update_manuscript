@@ -40,11 +40,11 @@ if [ $paired_end == "unpaired" ]; then
 			file_name=$(basename $file .bam)
                         # since this is reverse-stranded data, SAM flags mean the inverse
                         # Here we map to the "reverse" strand, forcing the 16 flag
-			# However, for our reversed data, this is the forward strand
+						# However, for our reversed data, this is the forward strand
                         sbatch -n 24 --wrap="samtools view -b -q 30 -f 16 $file > strands/"$file_name"_+_if_reverse_stranded_f16.bam"
 
                         # Next we map to the "forward" strand, excluding the 16 flag
-			# Which is actually the reverse strand for our reversed data
+						# Which is actually the reverse strand for our reversed data
                         sbatch -n 24 --wrap="samtools view -b -q 30 -F 16 $file > strands/"$file_name"_-_if_reverse_stranded_F16.bam"
                 done
 

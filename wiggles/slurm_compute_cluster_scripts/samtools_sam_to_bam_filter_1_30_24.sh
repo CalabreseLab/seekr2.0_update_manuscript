@@ -14,7 +14,7 @@ for f in $1/*.sam; do
 	else
 		new_name=$(basename $f .sam)
 	fi
-	#echo $new_name
+
 	sbatch --wrap="samtools view -b -q 30 $f > unstranded_bams/${new_name}.bam"
 done
 
