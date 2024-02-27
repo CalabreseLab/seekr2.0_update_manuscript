@@ -82,9 +82,13 @@ This is due to the jobs running in tandem, and therefore the intial directory cr
 
 
 You may want to filter your data - if so run: 
-```bash samtools_sam_to_bam_filter_1_30_24.sh </path/to/samfiles/>```
+```
+bash samtools_sam_to_bam_filter_1_30_24.sh </path/to/samfiles/>
+```
 If you do not wish to filter your data, please run: 
-```bash samtools_sam_to_bam_1_30_24.sh </path/to/samfiles/>```
+```
+bash samtools_sam_to_bam_1_30_24.sh </path/to/samfiles/>
+```
 
 
 
@@ -93,6 +97,7 @@ If you do not wish to filter your data, please run:
 
 ## 3. Split Strands
 **NECESSARY MODULE/SOFTWARE: samtools/1.18**
+
 You must now decide whether you want to split your data by strand. If you used a stranded RNA-seq kit (common post ~2016, but not guaranteed, you can look up your particular sequencing kit methods or contact the manufacturer if you are uncertain), it is generally recommended to split by strand for optimal visualization of the data in a wiggle track. 
 
 ### If you do not want to split by strand:
@@ -127,7 +132,7 @@ If so, run:
 ```
 sbatch samtools_binarize_split_strand_1_30_24.sh <paired/unpaired> <forward/reversed> </path/to/bamfiles/>
 ```
-Depending on your previous [step 3](https://github.com/CalabreseLab/seekr2.0_update_manuscript/blob/main/wiggles/README_general_wiggle_instructions.md#3-split-strands) choice, you may have already filitered your data, and could thus run either script here. 
+Depending on your previous [step 3](https://github.com/CalabreseLab/seekr2.0_update_manuscript/blob/main/wiggles/README_general_wiggle_instructions.md#3-split-strands) choice, you may have already filtered your data, and could thus run either script here. 
 
 
 
@@ -150,7 +155,8 @@ If you split by strand, this will be your path to the strands/ directory. If you
 
 
 ## 5. Standardize Signal by Read Counts  
-**NECESSARY MODULES/SOFTWARE: samtools/1.18**  
+**NECESSARY MODULES/SOFTWARE: samtools/1.18**
+
 If you would like to compare the signal between wiggle tracks (to compare conditions), it is important to standardize by the number of aligned reads in the dataset. If you do wish to standardize your wiggle track signal, run:
 ```
 bash run_count_reads_1_30_24.sh </path/to/bam/files>
@@ -238,7 +244,8 @@ sbatch --wrap="python3 control_normalize_wiggles_2_20_24.py <path/to/experimenta
 
 
 ## 9. Optional: Make bigWigs
-**NECESSARY MODULES/SOFTWARE: ucsctools/320**
+**NECESSARY MODULES/SOFTWARE: ucsctools/320**  
+
 Congratulations on generating your wiggle tracks successfully! If you have more than a few and want to be able to upload a view them all relatively quickly, I recommend converting them to bigWigs and using a TrackHub. To convert to bigWigs, run:
 ```
 bash make_bigwigs_1_30_24.sh </path/to/chrNameLength.txt> </path/to/wiggle/files/>
