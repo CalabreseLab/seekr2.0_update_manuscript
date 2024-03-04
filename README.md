@@ -49,7 +49,7 @@ Fit Python’s ‘common10’ distributions to 100000 randomly selected pairwise
 seekr_find_dist v43_canonical.fa -k 6 -sbt -sbs 100000 -fm -pb -pf modelfit6.pdf -o v43_can_6dists
 ```
 
-#### Panel C
+#### Panel C, Table 1 and S1
 
 Estimate a p value for the similarity between *XIST* and *KCNQ1OT1* using deduplicated GENCODE canonical lncRNAs as background and the best-fitting distribution from seekr_find_dist as the function to calculate significance.
 
