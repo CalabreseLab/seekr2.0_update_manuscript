@@ -668,4 +668,4 @@ $ seekr
 For further details about the seekr package please refer to the
 [Seekr GitHub page](https://github.com/CalabreseLab/seekr).
 
-Please also see [the pre-print](https://github.com/CalabreseLab/seekr/blob/logchanges/methods_mol_bio_seekr-v20.pdf) to a methods paper we wrote last year. This paper was originally scheduled to appear in Methods in Molecular Biology in 2020 but its publication date may be delayed.
+
