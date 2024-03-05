@@ -1,6 +1,6 @@
 # Seekr2.0 update manuscript
 
-This github repo contains the codes needed to generate plots in the seekr 2.0 update manuscript, followed by the instructions for recreating the wiggle tracks.
+This repository contains the code needed to generate plots in the manuscript describing the seekr 2.0 update, followed by the instructions for recreating the wiggle tracks in the manuscript.
 
 ## Installation
 
