@@ -79,7 +79,7 @@ This is due to the jobs running in tandem, and therefore the intial directory cr
 ### If you do not elect to downsample and merge
 
 
-You may want to filter your data - if so run: 
+You may want to filter your data (default q 30, excludes multi-mapping reads)- if so run: 
 ```
 bash samtools_sam_to_bam_filter_1_30_24.sh </path/to/samfiles/>
 ```
@@ -116,7 +116,7 @@ This can also be done from the SAM flags. Using the same website, identify the c
 						'second in pair' & 'mate reverse strand' = 160
 
 #### If you have unpaired data:	
-As far as I know, this is impossible to determine retroactively without external documentation or your prior processing of the data. If you still do not know, I recommend assuming that your data is NOT reverse stranded as this is decomplicates how you will interpret the SAM flags in post-processing. (With reverse-stranded data you must flip the SAM flag interpretations which can become confusing). If you make the wiggles and discover that your data *is* reverse-stranded, you can simply change the labels then or come back and re-run this for computational reproducability. 
+As far as I know, this is impossible to determine retroactively without external documentation or your prior processing of the data. If you still do not know, I recommend assuming that your data is NOT reverse stranded as this decomplicates how you will interpret the SAM flags in post-processing. (With reverse-stranded data you must flip the SAM flag interpretations which can become confusing). If you make the wiggles and discover that your data *is* reverse-stranded, you can simply change the labels then or come back and re-run this for computational reproducability. 
 
 
 **C. Using the information you obtained above:**  
@@ -130,7 +130,7 @@ If so, run:
 ```
 sbatch samtools_binarize_split_strand_1_30_24.sh <paired/unpaired> <forward/reversed> </path/to/bamfiles/>
 ```
-Depending on your previous [step 3](https://github.com/CalabreseLab/seekr2.0_update_manuscript/blob/main/wiggles/README_general_wiggle_instructions.md#3-split-strands) choice, you may have already filtered your data, and could thus run either script here. 
+Depending on your previous [step 2](https://github.com/CalabreseLab/seekr2.0_update_manuscript/blob/main/wiggles/README_general_wiggle_instructions.md#2-downsample-and-merge-replicates) choice, you may have already filtered your data, and could thus run either script here. 
 
 
 
