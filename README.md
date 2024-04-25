@@ -39,6 +39,10 @@ seekr_kmer_counts XIST.fa -k 6 -o XIST_6mers.csv -mv mean_6mers.npy -sv std_6mer
 seekr_kmer_counts KCNQ1OT1.fa -k 6 -o OT1_6mers.csv -mv mean_6mers.npy -sv std_6mers.npy
 
 seekr_pearson XIST_6mers.csv OT1_6mers.csv -o XIST_vs_OT1.csv
+
+seekr_kmer_counts v43_canonical.fa -k 6 -o v43_6mers.csv -mv mean_6mers.npy -sv std_6mers.npy
+
+seekr_pearson v43_6mers.csv XIST_6mers.csv -o v43_vs_XIST_rval.csv
 ```
 
 #### Panel B
