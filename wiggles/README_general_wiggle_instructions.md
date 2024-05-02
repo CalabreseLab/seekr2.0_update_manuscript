@@ -182,14 +182,14 @@ Next, make the input for the wiggle script. There are several things that must b
 * If you did not use STAR to align your data and do not have access to a STAR genome index for your organism, you can make a chrNameLength.txt by listing the name of each chromosome in "chr#" format on every line, followed by the chromosome length in nucleotides. These should be tab separated.  
 
 ### Automatic Input Generation
-To generate the serial job submission instructions for each sample automatically, you may be able to run make_wiggle_script_input_1_30_24.sh. This will still require a bit of knowledge about your processing preferences of 1-7 above.
+To generate the serial job submission instructions for each sample automatically, you may be able to run make_wiggle_script_input_5_2_24.sh. This will still require a bit of knowledge about your processing preferences of 1-7 above.
 ``
-sbatch make_wiggle_script_input_1_30_24.sh </path/to/bed12/files/> </path/to/chrNameLength.txt> <stranded/unstranded> <log norm: y or n> <bin size i.e. 50> </path/to/readcounts/ OR 1>
+sbatch make_wiggle_script_input_5_2_24.sh </path/to/bed12/files/> </path/to/chrNameLength.txt> <stranded/unstranded> <log norm: y or n> <bin size i.e. 50> </path/to/readcounts/ OR 1>
 ``
 
 Real data example:
 ```
-sbatch make_wiggle_script_input_1_30_24.sh bedfiles/ /proj/seq/data/STAR_genomes_v277/GRCm38_p6_GENCODE_primary/chrNameLength.txt stranded n 50 readcounts/
+sbatch make_wiggle_script_input_5_2_24.sh bedfiles/ /proj/seq/data/STAR_genomes_v277/GRCm38_p6_GENCODE_primary/chrNameLength.txt stranded n 50 readcounts/
 ```
 
 If 'stranded', then colors will be assigned red for a positive strand, denoted "+" and blue for a negative strand, denoted "-". You can manually change the color assignments in the output of this step, if desired. If the 'stranded' parameter is provided, the script expects to find "_+" and "_-" in the file name to determine strandedness and will flag an error otherwise.
@@ -424,14 +424,14 @@ Next, make the input for the wiggle script. There are several things that must b
 * If you did not use STAR to align your data and do not have access to a STAR genome index for your organism, you can make a chrNameLength.txt by listing the name of each chromosome in "chr#" format on every line, followed by the chromosome length in nucleotides. These should be tab separated.  
 
 ### Automatic Input Generation
-To generate the input commands for each sample automatically, you may be able to run [make_wiggle_script_input_2_27_24_local.sh](local_unix_scripts/make_wiggle_script_input_2_27_24_local.sh). This will still require a bit of knowledge about your processing preferences of 1-7 above.
+To generate the input commands for each sample automatically, you may be able to run [make_wiggle_script_input_5_2_24_local.sh](local_unix_scripts/make_wiggle_script_input_5_2_24_local.sh). This will still require a bit of knowledge about your processing preferences of 1-7 above.
 ``
-bash make_wiggle_script_input_2_27_24_local.sh </path/to/bed12/files/> </path/to/chrNameLength.txt> <stranded/unstranded> <log norm: y or n> <bin size i.e. 50> </path/to/readcounts/ OR 1>
+bash make_wiggle_script_input_5_2_24_local.sh </path/to/bed12/files/> </path/to/chrNameLength.txt> <stranded/unstranded> <log norm: y or n> <bin size i.e. 50> </path/to/readcounts/ OR 1>
 ``
 
 Real data example:
 ```
-bash make_wiggle_script_input_2_27_24_local.sh bedfiles/ /proj/seq/data/STAR_genomes_v277/GRCm38_p6_GENCODE_primary/chrNameLength.txt stranded n 50 readcounts/
+bash make_wiggle_script_input_5_2_24_local.sh bedfiles/ /proj/seq/data/STAR_genomes_v277/GRCm38_p6_GENCODE_primary/chrNameLength.txt stranded n 50 readcounts/
 ```
 
 If 'stranded', then colors will be assigned red for a positive strand, denoted "+" and blue for a negative strand, denoted "-". You can manually change the color assignments in the output of this step, if desired. If the 'stranded' parameter is provided, the script expects to find "_+" and "_-" in the file name to determine strandedness and will flag an error otherwise.
