@@ -16,7 +16,7 @@ do
 	file_name=$(basename $file ".bed")
 	if [ $readcount_path != '1' ]; then
 		# get the contents of the corresponding file from readcounts/
-		read_counts=$(cat readcounts/${file_name}_readcounts.txt)
+		read_counts=$(cat ${readcount_path}/${file_name}_readcounts.txt)
 	else
 		read_counts='1'
 	fi
