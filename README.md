@@ -594,37 +594,37 @@ The result file v43_chunks_v_ABDEF_pvals.csv is then processed in R with the cod
 
 ### coPARSE analysis
 
-All codes for this part of analysis is saved under the coparse folder.
+All codes for this part of analysis is saved under the **coparse folder**.
 
 From [GENCODE](https://www.gencodegenes.org/) download lncRNA fasta and gtf file for human: v25 and mouse: vM10.
 
-Filter both the human and mouse sequences and setting the background distribution of seekr r values using filtered human lncRNAs. Exract human and mouse sequences corresponds to Table S4 and Table S5a in the [coPARSE paper](https://www.nature.com/articles/s41588-023-01620-7). Calculate the seekr r value, p value and adjusted p value for all human vs mouse pair in Table S4 and S5a. Codes for this part are saved as coparse_analysis.py, which can be downloaded from this repo. Here we did not use the command line function as there are functions used that are outside the seekr package and are not command line compatible. So it is easier to accomplish the whole session in Python. 
+Filter both the human and mouse sequences and setting the background distribution of seekr r values using filtered human lncRNAs. Exract human and mouse sequences corresponds to Table S4 and Table S5a in the [coPARSE paper](https://www.nature.com/articles/s41588-023-01620-7). Calculate the seekr r value, p value and adjusted p value for all human vs mouse pair in Table S4 and S5a. Codes for this part are saved as **coparse_analysis.py**, which can be downloaded from this repo. Here we did not use the command line function as there are functions used that are outside the seekr package and are not command line compatible. So it is easier to accomplish the whole session in Python. 
 
-Plot seekr r value background distribution as a density plot; overlap with the human vs mouse r values in Table S4 and Table S5a as histogram. The histogram is then colored according to their p values. Codes for this part are saved as coparse_plotting.R. 
+Plot seekr r value background distribution as a density plot; overlap with the human vs mouse r values in Table S4 and Table S5a as histogram. The histogram is then colored according to their p values. Codes for this part are saved as **coparse_plotting.R**. 
 
-Cut human and mouse sequences in Table S4 and Table S5a into chunks, using code: coparse_generate_chunks.py.
+Cut human and mouse sequences in Table S4 and Table S5a into chunks, using code: **coparse_generate_chunks.py**.
 
-Calculate the seekr r value, p value and adjusted p value for sequences in Table S4 and S5a vs XIST full sequence; and chunked sequences of Table S4 and Table S5 vs XIST repeats. All functions needed here are within the seekr package. So here we provide the codes as in command line: coparse_XIST_S45.sh.
+Calculate the seekr r value, p value and adjusted p value for sequences in Table S4 and S5a vs XIST full sequence; and chunked sequences of Table S4 and Table S5 vs XIST repeats. All functions needed here are within the seekr package. So here we provide the codes as in command line: **coparse_XIST_S45.sh**.
 
-Analyze the results to get the significance chunk count per XIST repeat per gene and then combine all results together. Codes are saved as coparse_chunk_analysis.R
+Analyze the results to get the significance chunk count per XIST repeat per gene and then combine all results together. Codes are saved as **coparse_chunk_analysis.R**.
 
 
 ### randomness analysis
 
-All codes for this part of analysis is saved under the randomness folder.
+All codes for this part of analysis is saved under the **randomness folder**.
 
-Using previously generated data, run v43_canonical.fa against XIST.fa at k=6 with different subset size (10k, 100k, 1M and all-no subsetting) and fit the 'common10' models. Each simulate 10 times. Codes used here are saved as v43_XIST_fit_randomness_10k/100k/1M/full.sh
+Using previously generated data, run v43_canonical.fa against XIST.fa at k=6 with different subset size (10k, 100k, 1M and all-no subsetting) and fit the 'common10' models. Each simulate 10 times. Codes used here are saved as **v43_XIST_fit_randomness_10k/100k/1M/full.sh**.
 
-From the fitted model files, get the best fit model name and calculate the significant gene counts by either p value <0.05 or adjusted p value<0.05 corresponds to each simulation. Plot the significante gene counts against different subset size using codes: randomness_boxplot.R.
+From the fitted model files, get the best fit model name and calculate the significant gene counts by either p value <0.05 or adjusted p value<0.05 corresponds to each simulation. Plot the significante gene counts against different subset size using codes: **randomness_boxplot.R**.
 
-Use subset size = 100k, fit the data with 'all' models. Calcualte the p values and adjusted p values for all model fit, using the best fitted model, the second best fitted model and the third best fitted model. Codes saved as: v43_XIST_fit_randomness_100k_all.sh
+Use subset size = 100k, fit the data with 'all' models. Calcualte the p values and adjusted p values for all model fit, using the best fitted model, the second best fitted model and the third best fitted model. Codes saved as: **v43_XIST_fit_randomness_100k_all.sh**.
 
-Compare this results with the previous 'common10' best fitted model. Generate the dataframe that includes the r value that corresponds to 95% percentile of each fitted model (where p=0.05), and the significant gene count using p value<0.05 and adjusted p value<0.05. Codes saved as randomness_allvscommon10.py. And plot the boxplot of the comparison results using randomness_boxplot.R.
+Compare this results with the previous 'common10' best fitted model. Generate the dataframe that includes the r value that corresponds to 95% percentile of each fitted model (where p=0.05), and the significant gene count using p value<0.05 and adjusted p value<0.05. Codes saved as **randomness_allvscommon10.py**. And plot the boxplot of the comparison results using **randomness_boxplot.R**.
 
 
 ### human (s)eCLIP analysis
 
-All codes for this section are saved under the eclips folder.
+All codes for this section are saved under the **eclips folder**.
 
 Get the values from Table_S2_v43_lncRNA_ABDEF_count_expression_2_19_2024_formatted.xlsx and calculate the mean (k_tot_mean) of k_tot_1 and k_tot_2, and filter for the genes that have k_tot_mean > 0.0625. Use this as the genelist to filter for chunks list in v43_chunks_v_ABDEF_pvals.csv (previous results) for chunks that belongs to a gene within the genelist. For each repeat in XIST (rA, rF, rB1, rB2, rD and rE), list the chunks that are significant for that specific repeat. 
 
@@ -634,18 +634,18 @@ Randomization of these bedfiles is performed among the region covered by the gen
 
 After this transcript level randomization is done for each repeat of XIST, it is then converted to genomic coordinates using the same method mentioned above. In this way, a randomized control bedfile is generated for all significant chunks of each XIST repeat. 
 
-All these are performed by the code: eclips_bedfile_rand.R
+All these are performed by the code: **eclips_bedfile_rand.R**.
 
 Human (s)eCLIP bam files for RBM15, HNRNPK, MATR3, PTBP1 and HNRNPM are downloaded from [ENCODE](https://www.encodeproject.org/). HNRNPK are seCLIP (single end) while RBM15, PTBP1, HNRNPM, MATR3 are eCLIP (paired end). For bedtools multicov counting, bam file for HNRNPK should be aligned to the same strand (using argument -s). For RBM15, PTBP1, HNRNPM, MATR3, we can take only the second in pair and align to the same strand (using argument -s). In this way all bam files can use the same argument for multicov and can run altogether in the same command. Downloaded bam files are firstly sorted, indexed. Replicates are then merged for each RBP. For RBM15, PTBP1, HNRNPM, MATR3, extract the second read in pair and sort then index. In this way the bam files are prepared for bedtools multicov counting. 
 
-Codes for this part is saved as: eclips_sort_index_merge_bam.sh
+Codes for this part is saved as: **eclips_sort_index_merge_bam.sh**.
 
 
-Bedtools multicov counting is performed for all bedfiles of significant chunks for each XIST repeat and their corresponding randomized control bedfiles, using code: eclips_multicov_counts_eCLIPs_chunk.sh
+Bedtools multicov counting is performed for all bedfiles of significant chunks for each XIST repeat and their corresponding randomized control bedfiles, using code: **eclips_multicov_counts_eCLIPs_chunk.sh**.
 
 
 In the previous step if a chunk overlaps with multiple exons, it would be split into multiple entries in the bedfile according to the number of exons overlapped. Therefore for the output of multicov, counts for these split entries needs to be merged back to that chunk
-so that the significant chunk counts could be compared with its randomized control. Then for each repeat and each RBP, paired Wilcoxon test (or Wilcoxon signed-rank test) is performed to determine whether the counts in the significant chunk is siginificant more than the counts in their corresponding control. The number of counts for each significant chunk and randomized control for each RBP and each repeat are plotted as a boxplot. Codes fo this part is saved as: eclips_multicov_analysis_chunk.R
+so that the significant chunk counts could be compared with its randomized control. Then for each repeat and each RBP, paired Wilcoxon test (or Wilcoxon signed-rank test) is performed to determine whether the counts in the significant chunk is siginificant more than the counts in their corresponding control. The number of counts for each significant chunk and randomized control for each RBP and each repeat are plotted as a boxplot. Codes fo this part is saved as: **eclips_multicov_analysis_chunk.R**.
 
 
 
