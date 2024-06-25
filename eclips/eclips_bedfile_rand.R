@@ -233,7 +233,7 @@ for (m in 1:length(rpvec)) {
 
   chunk_bedfile<-convert_transcript_to_genome(sigc, exons)
 
-  write.table(chunk_bedfile,paste0('xist_sigchunk_',rp,'_1.bed'),sep='\t', quote=F, col.names = F, row.names = F)
+  write.table(chunk_bedfile,paste0('xist_sigchunk_',rp,'.bed'),sep='\t', quote=F, col.names = F, row.names = F)
 
   ###########################################################
   # randomize the chunks among the transcripts level
@@ -315,7 +315,7 @@ for (m in 1:length(rpvec)) {
   # convert to bedfile
   ck_bedfile<-convert_transcript_to_genome(ck_chunks, exons)
 
-  write.table(ck_bedfile,paste0('xist_sigchunk_',rp,'_ck_1.bed'),sep='\t', quote=F, col.names = F, row.names = F)
+  write.table(ck_bedfile,paste0('xist_sigchunk_',rp,'_ck.bed'),sep='\t', quote=F, col.names = F, row.names = F)
 
 
 }
