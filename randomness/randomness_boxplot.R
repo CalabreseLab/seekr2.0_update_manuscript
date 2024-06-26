@@ -1,3 +1,77 @@
+########## plot the all vs common10
+
+library(ggplot2)
+
+plotdf<-read.csv('allvscommon10.csv',header=T)
+
+plotdf$test<-factor(plotdf$test,levels=c('common10','all'))
+
+plotdf$model<-factor(plotdf$model,levels=c('lognorm','johnsonsu','genhyperbolic'))
+
+p<-ggplot(data=plotdf,aes(x=test,y=r95)) +
+  labs(x = "Test",y = "r value @ p=0.05") +
+  scale_y_continuous(limits = c(0.07,0.08), breaks=seq(from=0.07, to=0.08, by=0.005)) +
+  theme(plot.title=element_blank(),
+        panel.background=element_rect(fill='white'),
+        panel.grid.major=element_line(color='grey',linewidth =0.3),
+        axis.line.x = element_line(color="black", linewidth = 0.5),
+        axis.line.y = element_line(color="black", linewidth = 0.5),
+        legend.title=element_text(size=16),
+        legend.position='top',
+        legend.key.height = unit(1,'line'),
+        legend.key.width  = unit(0.5,'line'),
+        legend.key=element_rect(fill='transparent'),
+        legend.text=element_text(size=16),
+        axis.title.x = element_text(size = 18),
+        axis.title.y = element_text(size = 18),
+        axis.text.x=element_text(size=16),
+        axis.text.y=element_text(size=16, angle = 45, hjust = 0.5),
+        axis.title.y.right = element_text(size=16),
+        axis.text.y.right = element_text(size=16)) +
+  geom_boxplot(fill='grey',color='#708090',alpha=0.3,outlier.shape = NA,width = 0.5) +
+  stat_summary(fun = median, geom = "crossbar", width = 0.5, color = "#708090") +
+  geom_point(aes(x=test,y=r95,color=test,shape=model), 
+             position = position_jitter(width=0.25,height=0), size = 3,alpha=0.7) +
+  scale_color_brewer(palette = 'Set1',guide = 'none')+
+  scale_shape_manual(values = c(16,17,15))+
+  guides(shape=guide_legend(nrow=3))
+
+ggsave("allvs10_r95.pdf", plot = p, width = 3, height = 3, units = "in")
+
+
+
+p<-ggplot(data=plotdf,aes(x=test,y=psigcount)) +
+  labs(x = "Test",y = "Sig Gene Count") +
+  scale_y_continuous(limits = c(2700,3100), breaks=seq(from=2700, to=3100, by=200)) +
+  theme(plot.title=element_blank(),
+        panel.background=element_rect(fill='white'),
+        panel.grid.major=element_line(color='grey',linewidth =0.3),
+        axis.line.x = element_line(color="black", linewidth = 0.5),
+        axis.line.y = element_line(color="black", linewidth = 0.5),
+        legend.title=element_text(size=16),
+        legend.position='top',
+        legend.key.height = unit(1,'line'),
+        legend.key.width  = unit(0.5,'line'),
+        legend.key=element_rect(fill='transparent'),
+        legend.text=element_text(size=16),
+        axis.title.x = element_text(size = 18),
+        axis.title.y = element_text(size = 18),
+        axis.text.x=element_text(size=16),
+        axis.text.y=element_text(size=16, angle = 45, hjust = 0.5),
+        axis.title.y.right = element_text(size=16),
+        axis.text.y.right = element_text(size=16)) +
+  geom_boxplot(fill='grey',color='#708090',alpha=0.3,outlier.shape = NA,width = 0.5) +
+  stat_summary(fun = median, geom = "crossbar", width = 0.5, color = "#708090") +
+  geom_point(aes(x=test,y=psigcount,color=test,shape=model), 
+             position = position_jitter(width=0.25,height=0), size = 3,alpha=0.7) +
+  scale_color_brewer(palette = 'Set1',guide = 'none')+
+  scale_shape_manual(values = c(16,17,15))+
+  guides(shape=guide_legend(nrow=3))
+
+ggsave("allvs10_pcount.pdf", plot = p, width = 3, height = 3, units = "in")
+
+
+
 # plot the randomness box plot
 # set working directory to where the files are located
 
@@ -173,78 +247,5 @@ p<-ggplot(data=pvalcomb,aes(x=subsetsize,y=adjpvalcount)) +
   scale_shape_manual(values = c(16,17,15))
 
 ggsave("randomness_adjpval.pdf", plot = p, width = 3, height = 2, units = "in")
-
-
-########## plot the all vs common10
-
-library(ggplot2)
-
-plotdf<-read.csv('allvscommon10.csv',header=T)
-
-plotdf$test<-factor(plotdf$test,levels=c('common10','all_bf1','all_bf2','all_bf3'))
-
-plotdf$model<-factor(plotdf$model,levels=c('lognorm','nct','t','johnsonsu','genhyperbolic','norminvgauss'))
-
-p<-ggplot(data=plotdf,aes(x=test,y=r95)) +
-  labs(x = "Test",y = "R value (p=0.05)") +
-  scale_y_continuous(limits = c(0.07,0.08), breaks=seq(from=0.07, to=0.08, by=0.005)) +
-  theme(plot.title=element_blank(),
-        panel.background=element_rect(fill='white'),
-        panel.grid.major=element_line(color='grey',linewidth =0.3),
-        axis.line.x = element_line(color="black", linewidth = 0.5),
-        axis.line.y = element_line(color="black", linewidth = 0.5),
-        legend.title=element_text(size=16),
-        legend.position='top',
-        legend.key.height = unit(1,'line'),
-        legend.key.width  = unit(0.5,'line'),
-        legend.key=element_rect(fill='transparent'),
-        legend.text=element_text(size=16),
-        axis.title.x = element_text(size = 18),
-        axis.title.y = element_text(size = 18),
-        axis.text.x=element_text(size=16),
-        axis.text.y=element_text(size=16, angle = 45, hjust = 0.5),
-        axis.title.y.right = element_text(size=16),
-        axis.text.y.right = element_text(size=16)) +
-  geom_boxplot(fill='grey',color='#708090',alpha=0.3,outlier.shape = NA,width = 0.5) +
-  stat_summary(fun = median, geom = "crossbar", width = 0.5, color = "#708090") +
-  geom_point(aes(x=test,y=r95,color=test,shape=model), 
-             position = position_jitter(width=0.25,height=0), size = 3,alpha=0.7) +
-  scale_color_brewer(palette = 'Set1',guide = 'none')+
-  scale_shape_manual(values = c(16,18,8,17,15,11))+
-  guides(shape=guide_legend(nrow=3))
-
-ggsave("allvs10_r95.pdf", plot = p, width = 5, height = 3, units = "in")
-
-
-
-p<-ggplot(data=plotdf,aes(x=test,y=psigcount)) +
-  labs(x = "Test",y = "Sig Gene Count") +
-  scale_y_continuous(limits = c(2700,3100), breaks=seq(from=2700, to=3100, by=200)) +
-  theme(plot.title=element_blank(),
-        panel.background=element_rect(fill='white'),
-        panel.grid.major=element_line(color='grey',linewidth =0.3),
-        axis.line.x = element_line(color="black", linewidth = 0.5),
-        axis.line.y = element_line(color="black", linewidth = 0.5),
-        legend.title=element_text(size=16),
-        legend.position='top',
-        legend.key.height = unit(1,'line'),
-        legend.key.width  = unit(0.5,'line'),
-        legend.key=element_rect(fill='transparent'),
-        legend.text=element_text(size=16),
-        axis.title.x = element_text(size = 18),
-        axis.title.y = element_text(size = 18),
-        axis.text.x=element_text(size=16),
-        axis.text.y=element_text(size=16, angle = 45, hjust = 0.5),
-        axis.title.y.right = element_text(size=16),
-        axis.text.y.right = element_text(size=16)) +
-  geom_boxplot(fill='grey',color='#708090',alpha=0.3,outlier.shape = NA,width = 0.5) +
-  stat_summary(fun = median, geom = "crossbar", width = 0.5, color = "#708090") +
-  geom_point(aes(x=test,y=psigcount,color=test,shape=model), 
-             position = position_jitter(width=0.25,height=0), size = 3,alpha=0.7) +
-  scale_color_brewer(palette = 'Set1',guide = 'none')+
-  scale_shape_manual(values = c(16,18,8,17,15,11))+
-  guides(shape=guide_legend(nrow=3))
-
-ggsave("allvs10_pcount.pdf", plot = p, width = 5, height = 3, units = "in")
 
 
