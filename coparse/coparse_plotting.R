@@ -18,9 +18,6 @@ s5r <- read.csv('s5_diag_rvals.csv',header=T)
 s4p <- read.csv('s4_diag_pvals.csv',header=T)
 s5p <- read.csv('s5_diag_pvals.csv',header=T)
 
-s4adjp <- read.csv('s4_diag_bh_adjpvals.csv',header=T)
-s5adjp <- read.csv('s5_diag_bh_adjpvals.csv',header=T)
-
 s4df<-read.csv('coparse_tableS4.csv',header=T)
 s5df<-read.csv('coparse_tableS5a.csv',header=T)
 
@@ -28,13 +25,13 @@ s5df<-read.csv('coparse_tableS5a.csv',header=T)
 s4df<-s4df[,c('human.transcript','mouse.transcript')]
 s5df<-s5df[,c('human.transcript','mouse.transcript')]
 
-# combine the transcript and r p adjp values all together into one dataframe
-s4df<-cbind(s4df,s4r,s4p,s4adjp)
-colnames(s4df)<-c('human_transcript','mouse_transcript','rval','pval','adjpval')
+# combine the transcript and r p values all together into one dataframe
+s4df<-cbind(s4df,s4r,s4p)
+colnames(s4df)<-c('human_transcript','mouse_transcript','rval','pval')
 
 
-s5df<-cbind(s5df,s5r,s5p,s5adjp)
-colnames(s5df)<-c('human_transcript','mouse_transcript','rval','pval','adjpval')
+s5df<-cbind(s5df,s5r,s5p)
+colnames(s5df)<-c('human_transcript','mouse_transcript','rval','pval')
 
 
 #########################################################
@@ -119,10 +116,10 @@ for (n in 1:nrow(s5df)) {
 }
 
 # re-organize the dataframe to have the orders show in colnames below
-s4df<-s4df[,c(1,6,2,7,3,4,5)]
-# colnames(s4df)<-c('human_transcript','human_tlen','mouse_transcript','mouse_tlen','rval','pval','adjpval')
-s5df<-s5df[,c(1,6,2,7,3,4,5)]
-# colnames(s5df)<-c('human_transcript','human_tlen','mouse_transcript','mouse_tlen','rval','pval','adjpval')
+s4df<-s4df[,c(1,5,2,6,3,4)]
+# colnames(s4df)<-c('human_transcript','human_tlen','mouse_transcript','mouse_tlen','rval','pval')
+s5df<-s5df[,c(1,5,2,6,3,4)]
+# colnames(s5df)<-c('human_transcript','human_tlen','mouse_transcript','mouse_tlen','rval','pval')
 
 
 write.csv(s4df,'coparse_tableS4_seekr.csv',row.names = F)
@@ -181,66 +178,17 @@ ss<-c('HOTAIR','HOTTIP','TUG1','H19','NEAT1','XIST','MALAT1','KCNQ1OT1')
 
 hc<-hc[(hc$label %in% ss),]
 
-########################################################
+
+
+#############################
+# S4
+#############################
 # set coeff as the ratio between the first y axis and the second y axis
 # this can be calculate maximum counts for histogram divided by the max density
 # coeff<-(max_counts / max_density)
-
 coeff<-150
 
-# set histogram color based on adjpval
-s4df$fillcol<-'white'
-s4df$fillcol[which(s4df$adjpval<0.05)]<-'black'
-# find the r val on the cutoff
-min(s4df$rval[which(s4df$fillcol=='black')]) # 0.1575171
-max(s4df$rval[which(s4df$fillcol=='white')]) # 0.1574389
-#breaks has to be on 0.1575
-
-hbreaks<-seq(from=-1.0425, to=1.0575, by=0.02)
-
-
-# Create the plot
-p<-ggplot() +
-  geom_density(data = hh, aes(x = rval, y=after_stat(density)), fill="darkgrey",color='black', alpha=0.8) +
-  geom_histogram(data = s4df, aes(x = rval, y = after_stat(count)/coeff, fill=fillcol,color=fillcol), breaks=hbreaks, alpha=0.5) +
-  scale_y_continuous(name = "Density",breaks=seq(from=0, to=12, by=2), sec.axis = sec_axis(~ . * coeff,name = "Counts",breaks = seq(0, 2400, by = 300))) +
-  labs(x = "SEEKR R Values",y = "Density") +
-  coord_cartesian(xlim=c(-0.2,0.7))+
-  scale_x_continuous(breaks=c(-0.2,-0.1,0,0.1,0.2,0.3,0.4,0.5,0.6,0.7))+
-  #scale_y_continuous(breaks=seq(from=0, to=12, by=2))+
-  scale_color_manual(values=c('#d7191c','#2c7bb6'))+
-  scale_fill_manual(values=c('#fdae61','#abd9e9'))+
-  theme(plot.title=element_text(size=22),
-        panel.background=element_rect(fill='white'),
-        #plot.margin = margin(2, 2, 2, 2, "pt"),
-        # panel.grid.major=element_line(color='grey',linewidth =0.3),
-        panel.grid.major=element_blank(),
-        axis.line.x = element_line(color="black", linewidth = 0.5),
-        axis.line.y = element_line(color="black", linewidth = 0.5),
-        legend.position='none',
-        axis.title.x = element_text(size = 20),
-        axis.title.y = element_text(size = 20),
-        axis.text.x=element_text(size=18),
-        axis.text.y=element_text(size=18),
-        axis.title.y.right = element_text(size=20),
-        axis.text.y.right = element_text(size=20))
-
-p<-p + geom_vline(data = hc, aes(xintercept = rval), color = "#1b9e77", linetype = "solid",linewidth=0.5)+
-  geom_text_repel(data = hc, aes(x = rval, y = 11, label = label), 
-                  size = 4, nudge_x = 0.01, direction = "y", hjust = -0.1, vjust = -0.5,
-                  segment.color = "darkgray",   # Color of the connecting line
-                  segment.size = 0.5,       # Thickness of the connecting line
-                  segment.linetype = "solid")
-
-  
-
-ggsave("S4_dens_hist_adjpval.pdf", plot = p, width = 6.5, height = 3, units = "in")
-
-
-##################################
 # set histogram color based on pval
-coeff<-150
-
 s4df$fillcol<-'white'
 s4df$fillcol[which(s4df$pval<0.05)]<-'black'
 # find the r val on the cutoff
@@ -291,64 +239,12 @@ ggsave("S4_dens_hist_pval.pdf", plot = p, width = 6.5, height = 3, units = "in")
 # S5
 #############################
 
-
 # set coeff as the ratio between the first y axis and the second y axis
 # this can be calculate maximum counts for histogram divided by the max density
 # coeff<-(max_counts / max_density)
 coeff<-10
 
-# set histogram color based on adjpval
-s5df$fillcol<-'white'
-s5df$fillcol[which(s5df$adjpval<0.05)]<-'black'
-
-# find the r val on the cutoff
-min(s5df$rval[which(s5df$fillcol=='black')]) # 0.1413217
-max(s5df$rval[which(s5df$fillcol=='white')]) # 0.1345429
-
-# breaks has to be on 0.14
-hbreaks<-seq(from=-1.06, to=1.04, by=0.02)
-
-
-# Create the plot
-p<-ggplot() +
-  geom_density(data = hh, aes(x = rval, y=after_stat(density)), fill="darkgrey",color='black', alpha=0.8) +
-  geom_histogram(data = s5df, aes(x = rval, y = after_stat(count)/coeff, fill=fillcol,color=fillcol), breaks=hbreaks, alpha=0.5) +
-  scale_y_continuous(name = "Density",breaks=seq(from=0, to=12, by=2), sec.axis = sec_axis(~ . * coeff,name = "Counts",breaks = seq(0, 120, by = 20))) +
-  labs(x = "SEEKR R Values",y = "Density") +
-  coord_cartesian(xlim=c(-0.2,0.7))+
-  scale_x_continuous(breaks=c(-0.2,-0.1,0,0.1,0.2,0.3,0.4,0.5,0.6,0.7))+
-  #scale_y_continuous(breaks=seq(from=0, to=12, by=2))+
-  scale_color_manual(values=c('#d7191c','#2c7bb6'))+
-  scale_fill_manual(values=c('#fdae61','#abd9e9'))+
-  theme(plot.title=element_text(size=22),
-        panel.background=element_rect(fill='white'),
-        #plot.margin = margin(2, 2, 2, 2, "pt"),
-        panel.grid.major=element_blank(),
-        #panel.grid.major=element_line(color='grey',linewidth =0.3),
-        axis.line.x = element_line(color="black", linewidth = 0.5),
-        axis.line.y = element_line(color="black", linewidth = 0.5),
-        legend.position='none',
-        axis.title.x = element_text(size = 20),
-        axis.title.y = element_text(size = 20),
-        axis.text.x=element_text(size=18),
-        axis.text.y=element_text(size=18),
-        axis.title.y.right = element_text(size=20),
-        axis.text.y.right = element_text(size=20))
-
-p<-p + geom_vline(data = hc, aes(xintercept = rval), color = "#1b9e77", linetype = "solid",linewidth=0.5)+
-  geom_text_repel(data = hc, aes(x = rval, y = 11, label = label), 
-                  size = 4, nudge_x = 0.01, direction = "y", hjust = -0.1, vjust = -0.5,
-                  segment.color = "darkgray",   # Color of the connecting line
-                  segment.size = 0.5,       # Thickness of the connecting line
-                  segment.linetype = "solid")
-
-ggsave("S5_dens_hist_adjpval.pdf", plot = p, width = 6.5, height = 3, units = "in")
-
-
-#######################################
-coeff<-10
-
-# set histogram color based on adjpval
+# set histogram color based on pval
 s5df$fillcol<-'white'
 s5df$fillcol[which(s5df$pval<0.05)]<-'black'
 
