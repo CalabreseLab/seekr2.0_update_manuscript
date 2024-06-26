@@ -87,7 +87,7 @@ for i in range(1, 11):
         psigcount = sum(p<0.05)
 
     # add the results to the dataframe
-    new_row={'test':'all_bf1','model': distname, 'rep': i, 'r95': r95, 'psigcount': psigcount}
+    new_row={'test':'all','model': distname, 'rep': i, 'r95': r95, 'psigcount': psigcount}
     new_row_df = pd.DataFrame([new_row])
     comb_results = pd.concat([comb_results, new_row_df], ignore_index=True)
 
