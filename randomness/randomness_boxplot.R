@@ -88,14 +88,6 @@ file_1M_p<-files[grepl("^v43vXIST_1M_(10|[1-9])\\.csv$",files)]
 
 file_full_p<-files[grepl("^v43vXIST_full_(10|[1-9])\\.csv$",files)]
 
-file_10k_adjp<-files[grepl("^v43vXIST_10k_bh_(10|[1-9])\\.csv$",files)]
-
-file_100k_adjp<-files[grepl("^v43vXIST_100k_bh_(10|[1-9])\\.csv$",files)]
-
-file_1M_adjp<-files[grepl("^v43vXIST_1M_bh_(10|[1-9])\\.csv$",files)]
-
-file_full_adjp<-files[grepl("^v43vXIST_full_bh_(10|[1-9])\\.csv$",files)]
-
 
 # count the significant gene number
 count_sig<-function(filename) {
@@ -128,29 +120,8 @@ plotdf$subsetsize<-factor(plotdf$subsetsize,levels=c('10k','100k','1M','full'))
 
 pvalcomb<-plotdf
 
-# get the data for adjusted p val
-subsetsize<-rep(c('10k','100k','1M','full'),each=10)
-plotdf<-as.data.frame(subsetsize)
-plotdf$count<-NA
-
-filecomb_adjp<-c(file_10k_adjp,file_100k_adjp,file_1M_adjp,file_full_adjp)
-
-for (n in 1:length(filecomb_adjp)) {
-  
-  f<-filecomb_adjp[n]
-  
-  plotdf$count[n]<-count_sig(f)
-}
-
-plotdf$subsetsize<-factor(plotdf$subsetsize,levels=c('10k','100k','1M','full'))
-
-sum(plotdf$subsetsize!=pvalcomb$subsetsize)
-
 colnames(pvalcomb)<-c('subsetsize','pvalcount')
 
-# combine p val and adjusted p val together
-pvalcomb<-cbind(pvalcomb,plotdf$count)
-colnames(pvalcomb)[3]<-'adjpvalcount'
 
 # add in the best model (first one) used for each simulation 
 
@@ -217,35 +188,4 @@ p<-ggplot(data=pvalcomb,aes(x=subsetsize,y=pvalcount)) +
   scale_shape_manual(values = c(16,17,15))
 
 ggsave("randomness_pval.pdf", plot = p, width = 3, height = 2, units = "in")
-
-
-p<-ggplot(data=pvalcomb,aes(x=subsetsize,y=adjpvalcount)) +
-  labs(x = "Subset Size",y = "Sig Gene Count") +
-  scale_y_continuous(limits = c(750,1500), breaks=seq(from=750, to=1500, by=250)) +
-  theme(plot.title=element_blank(),
-        panel.background=element_rect(fill='white'),
-        panel.grid.major=element_line(color='grey',linewidth =0.3),
-        axis.line.x = element_line(color="black", linewidth = 0.5),
-        axis.line.y = element_line(color="black", linewidth = 0.5),
-        legend.title=element_text(size=10),
-        legend.position='top',
-        legend.key.height = unit(1,'line'),
-        legend.key.width  = unit(0.5,'line'),
-        legend.key=element_rect(fill='transparent'),
-        legend.text=element_text(size=10),
-        axis.title.x = element_text(size = 12),
-        axis.title.y = element_text(size = 12),
-        axis.text.x=element_text(size=10),
-        axis.text.y=element_text(size=10),
-        axis.title.y.right = element_text(size=10),
-        axis.text.y.right = element_text(size=10)) +
-  geom_boxplot(fill='grey',color='#708090',alpha=0.3,outlier.shape = NA,width = 0.5) +
-  stat_summary(fun = median, geom = "crossbar", width = 0.5, color = "#708090") +
-  geom_point(aes(x=subsetsize,y=adjpvalcount,color=subsetsize,shape=model), 
-             position = position_jitter(width=0.25,height=0), size = 2,alpha=0.7) +
-  scale_color_brewer(palette = 'Set1',guide = 'none')+
-  scale_shape_manual(values = c(16,17,15))
-
-ggsave("randomness_adjpval.pdf", plot = p, width = 3, height = 2, units = "in")
-
 
