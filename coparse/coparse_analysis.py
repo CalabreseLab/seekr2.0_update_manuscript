@@ -183,21 +183,31 @@ s4pvals=find_pval(seq1file='v25_S4.fasta', seq2file='vM10_S4.fasta', mean_path='
                   k_mer=6, fitres=v25_6dists, log2='Log2.post',
                   bestfit=1, outputname='s4_pvals', progress_bar=True)
 
+s4adjpvals=adj_pval(s4pvals, method='fdr_bh', alpha=0.05, outputname='s4_bh_adjpval')
 
 # check sig human mouse pair compared to human background dist in S5
 s5pvals=find_pval(seq1file='v25_S5a.fasta', seq2file='vM10_S5a.fasta', mean_path='v25_mean6.npy', std_path='v25_std6.npy',
                   k_mer=6, fitres=v25_6dists, log2='Log2.post',
                   bestfit=1, outputname='s5a_pvals', progress_bar=True)
 
+s5adjpvals=adj_pval(s5pvals, method='fdr_bh', alpha=0.05, outputname='s5_bh_adjpval')
 
 # only get the diagonal values as these are the p vals and adjusted p vals for the human vs mouse pairs in S4 and S5
 s4pvals_dia=np.diag(s4pvals)
 s4pvals_df=pd.DataFrame(s4pvals_dia)
 s4pvals_df.to_csv('s4_diag_pvals.csv',index=False)
 
+s4adjpvals_dia=np.diag(s4adjpvals)
+s4adjpvals_df=pd.DataFrame(s4adjpvals_dia)
+s4adjpvals_df.to_csv('s4_diag_bh_adjpvals.csv',index=False)
+
 s5pvals_dia=np.diag(s5pvals)
 s5pvals_df=pd.DataFrame(s5pvals_dia)
 s5pvals_df.to_csv('s5_diag_pvals.csv',index=False)
+
+s5adjpvals_dia=np.diag(s5adjpvals)
+s5adjpvals_df=pd.DataFrame(s5adjpvals_dia)
+s5adjpvals_df.to_csv('s5_diag_bh_adjpvals.csv',index=False)
 # these are used for coloring of the histograms
 
 
