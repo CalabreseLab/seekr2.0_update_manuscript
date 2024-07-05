@@ -149,6 +149,7 @@ seekr_kmer_heatmap DLX6_v_X_pvals.csv 0 1 -th 0.05 -cr '#1b7837,#ffffff,#c51b7d'
 seekr_kmer_heatmap LINC00632_v_X_pvals.csv 0 1 -th 0.05 -cr '#1b7837,#ffffff,#c51b7d' -distm correlation -linkm complete -wratio 0.3 -hratio 0.3 -xts 16 -yts 16 -cfs 16 -o LINC00632_v_X_pvals -hf pdf -hd 300
 
 seekr_kmer_heatmap PCDH10-DT_v_X_pvals.csv 0 1 -th 0.05 -cr '#1b7837,#ffffff,#c51b7d' -distm correlation -linkm complete -wratio 0.3 -hratio 0.3 -xts 16 -yts 16 -cfs 16 -o PCDH10-DT_v_X_pvals -hf pdf -hd 300
+
 ```
 
 ### Panel E
@@ -162,9 +163,9 @@ seekr_filter_gencode v43_lncRNA.fa -gtf v43_lncRNA.chr_patch_hapl_scaff.annotati
 
 seekr_norm_vectors v43_canonical.fa -k 4 -mv mean_4mers.npy -sv std_4mers.npy
 
-seekr_kmer_counts Figure_2_select_rE_like_regions_04_22_24.fa -k 4 -mv mean_4mers.npy -sv std_4mers.npy -o Figure_2_select_rE_like_regions_4mers.csv
+seekr_kmer_counts Figure_2_select_3p_like_lncs_04_22_24.fa -k 4 -mv mean_4mers.npy -sv std_4mers.npy -o select_lnc_4mers.csv
 
-seekr_kmer_heatmap Figure_2_select_rE_like_regions_4mers.csv 0 4 -th 1 -cr '#fcfc03,#ffffff,#1907e6' -distm correlation -linkm complete -wratio 0.3 -hratio 0.3 -xts 16 -yts 16 -cfs 16 -o Figure_2_select_rE_like_regions_4mers -hf pdf -hd 300
+seekr_kmer_heatmap select_lnc_4mers.csv 0 4 -th 1 -cr '#FCFC03,#FFFFFF,#1907E6' -distm correlation -linkm complete -wratio 0.3 -hratio 0.3 -xts 16 -yts 16 -cfs 16 -o select_lnc_4mers -hf pdf -hd 300
 
 ```
 
@@ -194,6 +195,7 @@ seekr_filter_gencode v43_lncRNA.fa -gtf v43_lncRNA.chr_patch_hapl_scaff.annotati
 seekr_norm_vectors v43_canonical.fa -k 4 -mv mean_4mers.npy -sv std_4mers.npy
 
 seekr_kmer_count_barplot Figure_2_select_3p_like_lncs_04_22_24.fa mean_4mers.npy std_4mers.npy 4 -l Log2.post -sm descending -tn 10 -xls 20 -yls 20 -xts 20 -yts 20 -ls 12 -o select_lncs_barplot4 -pf pdf -d 300
+
 ```
 
 ### Panel H
