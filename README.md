@@ -43,14 +43,13 @@ From the fitted model files, get the best fit model name and calculate the signi
 Fit the data with k=4, 5 or 6 and check how kmer size affect the number of significant lncRNAs detected.
 
 ```
-# k=6
+# k=4
 
-seekr_norm_vectors v43_canonical.fa -k 6 -mv mean_6mers.npy -sv std_6mers.npy
+seekr_norm_vectors v43_canonical.fa -k 4 -mv mean_4mers.npy -sv std_4mers.npy
 
-seekr_find_dist v43_canonical.fa -k 6 -sbt -sbs 100000 -fm -pb -pf modelfit6.pdf -o v43_can_6dists
+seekr_find_dist v43_canonical.fa -k 4 -sbt -sbs 100000 -fm -pb -pf modelfit4.pdf -o v43_can_4dists
 
-seekr_find_pval v43_canonical.fa XIST.fa mean_6mers.npy std_6mers.npy 6 v43_can_6dists.csv -o v43_v_XIST_pval_6
-
+seekr_find_pval v43_canonical.fa XIST.fa mean_4mers.npy std_4mers.npy 4 v43_can_4dists.csv -o v43_v_XIST_pval_4
 
 #k=5
 
@@ -60,14 +59,13 @@ seekr_find_dist v43_canonical.fa -k 5 -sbt -sbs 100000 -fm -pb -pf modelfit5.pdf
 
 seekr_find_pval v43_canonical.fa XIST.fa mean_5mers.npy std_5mers.npy 5 v43_can_5dists.csv -o v43_v_XIST_pval_5
 
+# k=6
 
-# k=4
+seekr_norm_vectors v43_canonical.fa -k 6 -mv mean_6mers.npy -sv std_6mers.npy
 
-seekr_norm_vectors v43_canonical.fa -k 4 -mv mean_4mers.npy -sv std_4mers.npy
+seekr_find_dist v43_canonical.fa -k 6 -sbt -sbs 100000 -fm -pb -pf modelfit6.pdf -o v43_can_6dists
 
-seekr_find_dist v43_canonical.fa -k 4 -sbt -sbs 100000 -fm -pb -pf modelfit4.pdf -o v43_can_4dists
-
-seekr_find_pval v43_canonical.fa XIST.fa mean_4mers.npy std_4mers.npy 4 v43_can_4dists.csv -o v43_v_XIST_pval_4
+seekr_find_pval v43_canonical.fa XIST.fa mean_6mers.npy std_6mers.npy 6 v43_can_6dists.csv -o v43_v_XIST_pval_6
 
 ```
 After getting the p values for k=4, 5 and 6, the boxplot was generated using **kmer_barplot.R**
@@ -127,9 +125,9 @@ Therefore, to determine whether our select XIST-like lncRNAs harbored notable re
 
 For XIST, we fragemented it based on its sequence features: each repeat is by itself an individual chunk. For the intervals that is longer than 1000nt, we fragmented it in the same way as the other lncRNAs.
 
-The python code for this part is available in this github repository named: generate_chunks.py
+The python code for this part is available in this github repository named: **generate_chunks.py**
 
-The fragmented lncRNAs and XIST fasta file are also available: v43_can500_namedchunks_500.fa and XIST_manual_chunks.fa
+The fragmented lncRNAs and XIST fasta file are also available: **v43_can500_namedchunks_500.fa** and **XIST_manual_chunks.fa**
 
 ### Panel B to D
 
@@ -317,7 +315,7 @@ seekr_norm_vectors v43_can500_namedchunks_500.fa -k 4 -mv mean_4mers.npy -sv std
 seekr_kmer_leiden XIST_manual_chunks.fa mean_4mers.npy std_4mers.npy 4 -a RBERVertexPartition -r 1.1 -pco 0.15 -cf XIST_manual_chunks 
 ```
 
-The result files: XIST_manual_chunks_nodes_leiden.csv and XIST_manual_chunks_edges_leiden.csv are then directly imported into Gephi as nodes and edges files for network plotting with Force Atalas2 layout.
+The result files: **XIST_manual_chunks_nodes_leiden.csv** and **XIST_manual_chunks_edges_leiden.csv** are then directly imported into Gephi as nodes and edges files for network plotting with Force Atalas2 layout.
 
 ## Table 2 and Table S2
 
@@ -325,7 +323,7 @@ Fragment GENCODE canonical lncRNAs into ~500nt chunks and compare each GENCODE l
 
 Define similarity as any fragment whose SEEKR-derived similarity to an *XIST* Repeat has a p value of less than 0.05. Tally the number of *XIST*-similar fragments in each lncRNA and used these sums to rank lncRNAs by their overall *XIST*-likeness.
 
-XIST_repeats.fa is also provided under this github repository.
+**XIST_repeats.fa** is also provided under this github repository.
 
 ```
 seekr_norm_vectors v43_can500_namedchunks_500.fa -k 4 -mv mean_4mers.npy -sv std_4mers.npy
@@ -333,7 +331,7 @@ seekr_norm_vectors v43_can500_namedchunks_500.fa -k 4 -mv mean_4mers.npy -sv std
 seekr_find_pval v43_can500_namedchunks_500.fa XIST_repeats.fa mean_4mers.npy std_4mers.npy 4 v43_can_4dists.csv -ft distribution -bf 1 -o v43_chunks_v_ABDEF_pvals -pb
 ```
 
-The result file v43_chunks_v_ABDEF_pvals.csv is then processed in R with the code: chunkABDE_organize.R to produce the count file: v43_lncRNA_ABDEF_count.csv. This file is then used to generate Table 2 and Table S2
+The result file **v43_chunks_v_ABDEF_pvals.csv** is then processed in R with the code: **chunkABDE_organize.R** to produce the count file: **v43_lncRNA_ABDEF_count.csv**. This file is then used to generate Table 2 and Table S2
 
 
 
