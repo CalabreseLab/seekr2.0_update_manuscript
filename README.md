@@ -47,7 +47,7 @@ Fit the data with k=4, 5 or 6 and check how kmer size affect the number of signi
 
 seekr_norm_vectors v43_canonical.fa -k 4 -mv mean_4mers.npy -sv std_4mers.npy
 
-seekr_find_dist v43_canonical.fa -k 4 -sbt -sbs 100000 -fm -pb -pf modelfit4.pdf -o v43_can_4dists
+seekr_find_dist v43_canonical.fa -k 4 -sbt -sbs 100000 -fm -pb -pf modelfit4 -o v43_can_4dists
 
 seekr_find_pval v43_canonical.fa XIST.fa mean_4mers.npy std_4mers.npy 4 v43_can_4dists.csv -o v43_v_XIST_pval_4
 
@@ -55,7 +55,7 @@ seekr_find_pval v43_canonical.fa XIST.fa mean_4mers.npy std_4mers.npy 4 v43_can_
 
 seekr_norm_vectors v43_canonical.fa -k 5 -mv mean_5mers.npy -sv std_5mers.npy
 
-seekr_find_dist v43_canonical.fa -k 5 -sbt -sbs 100000 -fm -pb -pf modelfit5.pdf -o v43_can_5dists
+seekr_find_dist v43_canonical.fa -k 5 -sbt -sbs 100000 -fm -pb -pf modelfit5 -o v43_can_5dists
 
 seekr_find_pval v43_canonical.fa XIST.fa mean_5mers.npy std_5mers.npy 5 v43_can_5dists.csv -o v43_v_XIST_pval_5
 
@@ -63,7 +63,7 @@ seekr_find_pval v43_canonical.fa XIST.fa mean_5mers.npy std_5mers.npy 5 v43_can_
 
 seekr_norm_vectors v43_canonical.fa -k 6 -mv mean_6mers.npy -sv std_6mers.npy
 
-seekr_find_dist v43_canonical.fa -k 6 -sbt -sbs 100000 -fm -pb -pf modelfit6.pdf -o v43_can_6dists
+seekr_find_dist v43_canonical.fa -k 6 -sbt -sbs 100000 -fm -pb -pf modelfit6 -o v43_can_6dists
 
 seekr_find_pval v43_canonical.fa XIST.fa mean_6mers.npy std_6mers.npy 6 v43_can_6dists.csv -o v43_v_XIST_pval_6
 
@@ -108,7 +108,7 @@ Estimate p values for the similarity between *XIST* and all other GENCODE canoni
 ```
 seekr_norm_vectors v43_canonical.fa -k 6 -mv mean_6mers.npy -sv std_6mers.npy
 
-seekr_find_dist v43_canonical.fa -k 6 -sbt -sbs 100000 -fm -pb -pf modelfit6.pdf -o v43_can_6dists
+seekr_find_dist v43_canonical.fa -k 6 -sbt -sbs 100000 -fm -pb -pf modelfit6 -o v43_can_6dists
 
 seekr_find_pval XIST.fa KCNQ1OT1.fa mean_6mers.npy std_6mers.npy 6 v43_can_6dists.csv -o XIST_v_OT1_pval
 
@@ -134,7 +134,7 @@ The fragmented lncRNAs and XIST fasta file are also available: **v43_can500_name
 Fragment select *XIST*-like lncRNAs into ~500 nucleotide (nt) chunks and compare the chunks in each *XIST*-like lncRNA to each chunk within *XIST*. Evaluate each *XIST* Repeat as a single intact chunk and separate the intervening *XIST* intervals into ~500 chunks. 
 
 ```
-seekr_find_dist v43_can500_namedchunks_500.fa -k 4 -sbt -sbs 100000 -fm -pb -pf modelfit4.pdf -o v43_can_4dists
+seekr_find_dist v43_can500_namedchunks_500.fa -k 4 -sbt -sbs 100000 -fm -pb -pf modelfit4 -o v43_can_4dists
 
 seekr_norm_vectors v43_can500_namedchunks_500.fa -k 4 -mv mean_4mers.npy -sv std_4mers.npy
 
