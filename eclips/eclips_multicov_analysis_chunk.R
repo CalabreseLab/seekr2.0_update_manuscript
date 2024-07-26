@@ -261,7 +261,7 @@ sigcc<-ggplot(comb_long, aes(x = exp, y = (count+1), fill=exp)) +
   scale_y_log10()+
   theme(
     panel.background=element_rect(fill='white'),
-    panel.grid.major=element_line(color='grey',size=0.3),
+    panel.grid.major=element_line(color='grey',linewidth=0.3),
     legend.position = 'none',
     legend.key.height = unit(1,'line'),
     legend.key.width  = unit(1,'line'),
