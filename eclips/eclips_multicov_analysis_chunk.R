@@ -198,10 +198,11 @@ ck.vec<-c('RBM15_ck','HNRNPK_ck','MATR3_ck','PTBP1_ck','HNRNPM_ck')
 repeat.vec<-c('rA','rB1','rB2','rD','rE','rF')
 
 # remove variable if already exists
-if exists(comb_long) {
+if (exists('comb_long')) {
   rm(comb_long)
 }
-if exists(comb_diff) {
+
+if (exists('comb_diff')) {
   rm(comb_diff)
 }
 
