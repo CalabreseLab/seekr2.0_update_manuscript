@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # binarizes to a bam file, and splits by strand
-# sbatch samtools_filter_binarize_split_strands_1_30_24.sh <paired/unpaired> <forward/reversed> </path/to/bamfiles/>
+# sbatch samtools_binarize_split_strands_1_30_24.sh <paired/unpaired> <forward/reversed> </path/to/bamfiles/>
 if [ ! -d strands ]; then
 	mkdir strands
 fi
