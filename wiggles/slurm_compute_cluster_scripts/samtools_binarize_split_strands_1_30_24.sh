@@ -19,9 +19,9 @@ if [ $paired_end == "unpaired" ]; then
 
 	if [ $reversed_seq == "forward" ]; then
 
-		for file in $samfile_path/*.bam; do
+		for file in $samfile_path/*.sam; do
 
-			file_name=$(basename $file .bam)
+			file_name=$(basename $file .sam)
 			# since this is forward-stranded data, SAM flags can be read literally
 			# Here we map to the "reverse" strand, forcing the 16 flag
 			sbatch -n 24 --wrap="samtools view -b -f 16 $file > strands/"$file_name"_-_if_forward_stranded_f16.bam"
@@ -35,9 +35,9 @@ if [ $paired_end == "unpaired" ]; then
 
 	elif [ $reversed_seq == "reversed" ]; then
 
-		for file in $samfile_path/*.bam; do
+		for file in $samfile_path/*.sam; do
 
-			file_name=$(basename $file .bam)
+			file_name=$(basename $file .sam)
                         # since this is reverse-stranded data, SAM flags mean the inverse
                         # Here we map to the "reverse" strand, forcing the 16 flag
 						# However, for our reversed data, this is the forward strand
@@ -64,8 +64,8 @@ elif [ $paired_end == "paired" ]; then
 	if [ $reversed_seq == "forward" ]; then
 		
 
-		for file in $samfile_path/*.bam; do
-			file_name=$(basename $file .bam)
+		for file in $samfile_path/*.sam; do
+			file_name=$(basename $file .sam)
 			# since this is forward-stranded data, SAM flags can be read literally
 			# Here we map to the "reverse" strand, forcing the 83 and 163 flags
 			sbatch -n 24 --wrap="samtools view -b -f 83 $file > strands/"$file_name"_-_83.bam
@@ -83,9 +83,9 @@ elif [ $paired_end == "paired" ]; then
 
 	elif [ $reversed_seq == "reversed" ]; then
 		
-		for file in $samfile_path/*.bam; do
+		for file in $samfile_path/*.sam; do
 
-			file_name=$(basename $file .bam)
+			file_name=$(basename $file .sam)
 			# since this is reverse-stranded data, SAM flags mean the inverse
 			# Here we map to the "reverse" strand, forcing the 83 and 163 flags
 			# However, for our reversed data, this is the forward strand
