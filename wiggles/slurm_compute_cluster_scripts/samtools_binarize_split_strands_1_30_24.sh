@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# binarizes to a bam file, and splits by strand
-# sbatch samtools_binarize_split_strands_1_30_24.sh <paired/unpaired> <forward/reversed> </path/to/bamfiles/>
+# binarizes sam to a bam file, and splits by strand
+# sbatch samtools_binarize_split_strands_1_30_24.sh <paired/unpaired> <forward/reversed> </path/to/samfiles/>
 if [ ! -d strands ]; then
 	mkdir strands
 fi
@@ -103,13 +103,13 @@ elif [ $paired_end == "paired" ]; then
 
 
 	else
-		echo "Please use the following format to run this script: bash samtools_filter_binarize_split_strands_1_30_24.sh <paired/unpaired> <forward/reversed> </path/to/samfiles.sam>"
+		echo "Please use the following format to run this script: bash samtools_binarize_split_strands_1_30_24.sh <paired/unpaired> <forward/reversed> </path/to/samfiles/>"
 		exit
 	fi
 	
 	
 	
 else
-	echo "Please use the following format to run this script: bash samtools_filter_binarize_split_strands_1_30_24.sh <paired/unpaired> <forward/reversed> </path/to/samfiles.sam>"
+	echo "Please use the following format to run this script: bash samtools_binarize_split_strands_1_30_24.sh <paired/unpaired> <forward/reversed> </path/to/samfiles/>"
 	exit
 fi
