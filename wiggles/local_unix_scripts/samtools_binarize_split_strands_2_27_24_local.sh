@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # binarizes to a bam file, and splits by strand
-# bash samtools_filter_binarize_split_strands_1_30_24.sh <paired/unpaired> <forward/reversed> </path/to/bamfiles/>
+# bash samtools_filter_binarize_split_strands_1_30_24.sh <paired/unpaired> <forward/reversed> </path/to/samfiles/>
 if [ ! -d strands ]; then
 	mkdir strands
 fi
@@ -19,9 +19,9 @@ if [ $paired_end == "unpaired" ]; then
 
 	if [ $reversed_seq == "forward" ]; then
 
-		for file in $samfile_path/*.bam; do
+		for file in $samfile_path/*.sam; do
 
-			file_name=$(basename $file .bam)
+			file_name=$(basename $file .sam)
 			# since this is forward-stranded data, SAM flags can be read literally
 			# Here we map to the "reverse" strand, forcing the 16 flag
 			samtools view -b -f 16 $file > strands/"$file_name"_-_if_forward_stranded_f16.bam
@@ -35,9 +35,9 @@ if [ $paired_end == "unpaired" ]; then
 
 	elif [ $reversed_seq == "reversed" ]; then
 
-		for file in $samfile_path/*.bam; do
+		for file in $samfile_path/*.sam; do
 
-			file_name=$(basename $file .bam)
+			file_name=$(basename $file .sam)
                         # since this is reverse-stranded data, SAM flags mean the inverse
                         # Here we map to the "reverse" strand, forcing the 16 flag
 						# However, for our reversed data, this is the forward strand
@@ -64,8 +64,8 @@ elif [ $paired_end == "paired" ]; then
 	if [ $reversed_seq == "forward" ]; then
 		
 
-		for file in $samfile_path/*.bam; do
-			file_name=$(basename $file .bam)
+		for file in $samfile_path/*.sam; do
+			file_name=$(basename $file .sam)
 			# since this is forward-stranded data, SAM flags can be read literally
 			# Here we map to the "reverse" strand, forcing the 83 and 163 flags
 			samtools view -b -f 83 $file > strands/"$file_name"_-_83.bam
@@ -85,9 +85,9 @@ elif [ $paired_end == "paired" ]; then
 
 	elif [ $reversed_seq == "reversed" ]; then
 		
-		for file in $samfile_path/*.bam; do
+		for file in $samfile_path/*.sam; do
 
-			file_name=$(basename $file .bam)
+			file_name=$(basename $file .sam)
 			# since this is reverse-stranded data, SAM flags mean the inverse
 			# Here we map to the "reverse" strand, forcing the 83 and 163 flags
 			# However, for our reversed data, this is the forward strand
@@ -107,13 +107,13 @@ elif [ $paired_end == "paired" ]; then
 
 
 	else
-		echo "Please use the following format to run this script: bash samtools_filter_binarize_split_strands_1_30_24.sh <paired/unpaired> <forward/reversed> </path/to/samfiles.sam>"
+		echo "Please use the following format to run this script: bash samtools_filter_binarize_split_strands_1_30_24.sh <paired/unpaired> <forward/reversed> </path/to/samfiles/>"
 		exit
 	fi
 	
 	
 	
 else
-	echo "Please use the following format to run this script: bash samtools_filter_binarize_split_strands_1_30_24.sh <paired/unpaired> <forward/reversed> </path/to/samfiles.sam>"
+	echo "Please use the following format to run this script: bash samtools_filter_binarize_split_strands_1_30_24.sh <paired/unpaired> <forward/reversed> </path/to/samfiles/>"
 	exit
 fi
