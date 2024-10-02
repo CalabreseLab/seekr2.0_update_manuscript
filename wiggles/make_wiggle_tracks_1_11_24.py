@@ -93,12 +93,14 @@ for chrom in wig_dict:
 
 
 # delete the first and last bin in the chrM wig_dict dictionary
-if 0 in wig_dict["chrM"].keys():
-    del wig_dict["chrM"][0]
 
-if wig_dict["chrM"]:
-    last_bin = max(wig_dict["chrM"])
-    del wig_dict["chrM"][last_bin]
+if "chrM" in wig_dict.keys():
+    if 0 in wig_dict["chrM"].keys():
+        del wig_dict["chrM"][0]
+    # check if there is still more entries in the chrM dictionary
+    if len(wig_dict["chrM"]) > 0:
+        last_bin = max(wig_dict["chrM"])
+        del wig_dict["chrM"][last_bin]
 
 # write the wiggle track file
 with open(header + ".wig", "w") as outfile:
