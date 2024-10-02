@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# run with bash bam_to_bed12_1_30_24.sh </path/to/bam/files>
+# run with bash bam_to_bed12_1_30_24.sh </path/to/bam/files/>
 
 if [ ! -d bedfiles ]; then
 	mkdir bedfiles
