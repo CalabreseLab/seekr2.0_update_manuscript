@@ -155,12 +155,12 @@ If you split by strand, this will be your path to the strands/ directory. If you
 ## 5. Standardize Signal by Read Counts  
 **NECESSARY MODULES/SOFTWARE: samtools/1.18**
 
-If you would like to compare the signal between wiggle tracks (to compare conditions), it is important to standardize by the number of aligned reads in the dataset. If you do wish to standardize your wiggle track signal, run:
+If you would like to compare the signal between wiggle tracks (to compare conditions), it is important to standardize by the number of aligned reads in the dataset. This can be done within the entire experiment or just relative to the number of aligned reads in the strand. If you do wish to standardize your wiggle track signal, run:
 ```
 bash run_count_reads_1_30_24.sh </path/to/bam/files>
 ```
-
-If you do not wish to do so, please skip this step. 
+The path to the BAM files is typically either the merged_downsampled_bamfiles/ (total experiment read counts) or the strands/ (per strand read count normalization)
+If you do not wish to do normalize your data relative to the read counts, please skip this step. 
 
 
 
@@ -182,14 +182,17 @@ Next, make the input for the wiggle script. There are several things that must b
 * If you did not use STAR to align your data and do not have access to a STAR genome index for your organism, you can make a chrNameLength.txt by listing the name of each chromosome in "chr#" format on every line, followed by the chromosome length in nucleotides. These should be tab separated.  
 
 ### Automatic Input Generation
-To generate the serial job submission instructions for each sample automatically, you may be able to run make_wiggle_script_input_5_2_24.sh. This will still require a bit of knowledge about your processing preferences of 1-7 above.
+To generate the serial job submission instructions for each sample automatically, you may be able to run [make_wiggle_script_input_10_24_24.sh](slurm_compute_cluster_scripts/make_wiggle_script_input_10_24_24.sh). This will still require a bit of knowledge about your processing preferences of 1-7 above.
+
+The final input variable is needed for users with stranded data that wish to normalize their data by read counts. The default is "y" which will expect that the readcount files have the same names as your input files (normalizing counts by reads per strand). Alternatively, "n" will recognize files that match the experiment name before the strand and can therefore normalize counts by the entire experiment's reads. This will refer back to your decision in [step 5](https://github.com/CalabreseLab/seekr2.0_update_manuscript/blob/main/wiggles/README_general_wiggle_instructions.md#5-standardize-signal-by-read-counts).
+
 ``
-sbatch make_wiggle_script_input_5_2_24.sh </path/to/bed12/files/> </path/to/chrNameLength.txt> <stranded/unstranded> <log norm: y or n> <bin size i.e. 50> </path/to/readcounts/ OR 1>
+sbatch make_wiggle_script_input_10_24_24.sh </path/to/bed12/files/> </path/to/chrNameLength.txt> <stranded/unstranded> <log norm: y or n> <bin size i.e. 50> </path/to/readcounts/ OR 1> <OPTIONAL: normalize read counts by strand: y/n>
 ``
 
 Real data example:
 ```
-sbatch make_wiggle_script_input_5_2_24.sh bedfiles/ /proj/seq/data/STAR_genomes_v277/GRCm38_p6_GENCODE_primary/chrNameLength.txt stranded n 50 readcounts/
+sbatch make_wiggle_script_input_5_2_24.sh bedfiles/ /proj/seq/data/STAR_genomes_v277/GRCm38_p6_GENCODE_primary/chrNameLength.txt stranded n 50 readcounts/ y
 ```
 
 If 'stranded', then colors will be assigned red for a positive strand, denoted "+" and blue for a negative strand, denoted "-". You can manually change the color assignments in the output of this step, if desired. If the 'stranded' parameter is provided, the script expects to find "_+" and "_-" in the file name to determine strandedness and will flag an error otherwise.
@@ -397,13 +400,12 @@ If you split by strand, this will be your path to the strands/ directory. If you
 ## 5. Standardize Signal by Read Counts - Local   
 **NECESSARY MODULES/SOFTWARE: samtools/1.18**
 
-If you would like to compare the signal between wiggle tracks (to compare conditions), it is important to standardize by the number of aligned reads in the dataset. If you do wish to standardize your wiggle track signal, run:
+If you would like to compare the signal between wiggle tracks (to compare conditions), it is important to standardize by the number of aligned reads in the dataset. This can be done within the entire experiment or just relative to the number of aligned reads in the strand. If you do wish to standardize your wiggle track signal, run:
 ```
-bash run_count_reads_2_27_24_local.sh </path/to/bam/files>
+bash run_count_reads_1_30_24.sh </path/to/bam/files>
 ```
-
-If you do not wish to do so, please skip this step. 
-
+The path to the BAM files is typically either the merged_downsampled_bamfiles/ (total experiment read counts) or the strands/ (per strand read count normalization)
+If you do not wish to do normalize your data relative to the read counts, please skip this step. 
 
 
 
@@ -424,14 +426,16 @@ Next, make the input for the wiggle script. There are several things that must b
 * If you did not use STAR to align your data and do not have access to a STAR genome index for your organism, you can make a chrNameLength.txt by listing the name of each chromosome in "chr#" format on every line, followed by the chromosome length in nucleotides. These should be tab separated.  
 
 ### Automatic Input Generation
-To generate the input commands for each sample automatically, you may be able to run [make_wiggle_script_input_5_2_24_local.sh](local_unix_scripts/make_wiggle_script_input_5_2_24_local.sh). This will still require a bit of knowledge about your processing preferences of 1-7 above.
+To generate the input commands for each sample automatically, you may be able to run [make_wiggle_script_input_10_24_24_local.sh](local_unix_scripts/make_wiggle_script_input_10_24_24_local.sh). This will still require a bit of knowledge about your processing preferences of 1-7 above.
+
+The final input variable is needed for users with stranded data that wish to normalize their data by read counts. The default is "y" which will expect that the readcount files have the same names as your input files (normalizing counts by reads per strand). Alternatively, "n" will recognize files that match the experiment name before the strand and can therefore normalize counts by the entire experiment's reads. This will refer back to your decision in [step 5](https://github.com/CalabreseLab/seekr2.0_update_manuscript/blob/main/wiggles/README_general_wiggle_instructions.md#5-standardize-signal-by-read-counts---local).
 ``
-bash make_wiggle_script_input_5_2_24_local.sh </path/to/bed12/files/> </path/to/chrNameLength.txt> <stranded/unstranded> <log norm: y or n> <bin size i.e. 50> </path/to/readcounts/ OR 1>
+bash make_wiggle_script_input_10_24_24_local.sh </path/to/bed12/files/> </path/to/chrNameLength.txt> <stranded/unstranded> <log norm: y or n> <bin size i.e. 50> </path/to/readcounts/ OR 1> <OPTIONAL: normalize read counts by strand: y/n>
 ``
 
 Real data example:
 ```
-bash make_wiggle_script_input_5_2_24_local.sh bedfiles/ /proj/seq/data/STAR_genomes_v277/GRCm38_p6_GENCODE_primary/chrNameLength.txt stranded n 50 readcounts/
+bash make_wiggle_script_input_10_24_24_local.sh bedfiles/ /proj/seq/data/STAR_genomes_v277/GRCm38_p6_GENCODE_primary/chrNameLength.txt stranded n 50 readcounts/ y
 ```
 
 If 'stranded', then colors will be assigned red for a positive strand, denoted "+" and blue for a negative strand, denoted "-". You can manually change the color assignments in the output of this step, if desired. If the 'stranded' parameter is provided, the script expects to find "_+" and "_-" in the file name to determine strandedness and will flag an error otherwise.
