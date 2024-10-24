@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# run with make_wiggle_script_input_10_24_24.sh </path/to/bed12/files/> </path/to/chrNameLength.txt> <stranded/unstranded> <log10/nolog as: y/n> <bin size i.e. 50> </path/to/readcounts/ OR 1> <OPTIONAL: normalize read counts by strand: y/n>
+# run with bash make_wiggle_script_input_10_24_24.sh </path/to/bed12/files/> </path/to/chrNameLength.txt> <stranded/unstranded> <log10/nolog as: y/n> <bin size i.e. 50> </path/to/readcounts/ OR 1> <OPTIONAL: normalize read counts by strand: y/n>
 
 bedfile_path=$1
 chrNameLengthfile=$2
