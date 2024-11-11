@@ -54,7 +54,7 @@ sbatch -t 24:00:00 -n 24 --mem=50G --error=std_err_%j.err --wrap="STAR --runThre
 ## 2. Downsample and Merge Replicates
 **NECESSARY MODULES/SOFTWARE: samtools/1.18**
 
-You may want to downsample and merge your replicates if you plan to generate one wiggle per condition. Downsampling ensures that your replicates contribution equally to the final sample wiggle once you merge the replicates. You may elect to not downsample and merge your replicates if you are interested in identifying potential batch effect or hope to study variation between replicates via the final wiggle tracks, or if you simply do not have replicates.
+You may want to downsample and merge your replicates if you plan to generate one wiggle per condition. Downsampling ensures that your replicates contribute equally to the final sample wiggle once you merge the replicates. You may elect to not downsample and merge your replicates if you are interested in identifying potential batch effect or hope to study variation between replicates via the final wiggle tracks, or if you simply do not have replicates.
 
 ### If you elect to downsample and merge
 You will need to run the [run_downsample_merge_2_26_24.sh](run_downsample_merge_2_26_24.sh) script using the following input format, run this for each set of replicates you wish to downsample:
@@ -160,7 +160,7 @@ If you would like to compare the signal between wiggle tracks (to compare condit
 bash run_count_reads_1_30_24.sh </path/to/bam/files>
 ```
 The path to the BAM files is typically either the merged_downsampled_bamfiles/ (total experiment read counts) or the strands/ (per strand read count normalization)
-If you do not wish to do normalize your data relative to the read counts, please skip this step. 
+If you do not wish to normalize your data relative to the read counts, please skip this step. 
 
 
 
