@@ -129,10 +129,11 @@ with open(header + ".wig", "w") as outfile:
                     if first_chrom_bin == True:
                         outfile.write("variableStep chrom=" + chrom + " span=" + str(bin_size) + "\n")
                         first_chrom_bin = False
-                    bin_name = bin*50
+                    bin_name = bin*bin_size
                     if bin_name + bin_size > int(lengths[chrom]):
                         outfile.write("variableStep chrom=" + chrom + " span=" + str(int(lengths[chrom])-bin_name) + "\n") #this cutsoff the bin to not max out the chromosome length
                     if log10 == "y":
                         outfile.write(str(bin_name) + "\t" + str(math.log10(wig_dict[chrom][bin])/rpm) + "\n")
                     else:
                         outfile.write(str(bin_name) + "\t" + str(wig_dict[chrom][bin]/rpm) + "\n")
+
