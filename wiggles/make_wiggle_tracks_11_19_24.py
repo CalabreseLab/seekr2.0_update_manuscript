@@ -15,7 +15,7 @@ import math
 #6. Bin size for the wiggle track
 #7. Number of reads in the dataset (per wiggle track) for RPM standardization. If you don't wish to standardize by RPM, put the value 1 here.
 
-# ex: python3 make_wiggle_tracks_10_2_24.py <bed12> <chrNameLength.txt> test-output blue n 50 1
+# ex: python3 make_wiggle_tracks_11_19_24.py <bed12> <chrNameLength.txt> test-output blue n 50 1
 
 # import variables
 bedfile = sys.argv[1]
