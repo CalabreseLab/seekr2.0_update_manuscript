@@ -192,7 +192,7 @@ sbatch make_wiggle_script_input_10_24_24.sh </path/to/bed12/files/> </path/to/ch
 
 Real data example:
 ```
-sbatch make_wiggle_script_input_5_2_24.sh bedfiles/ /proj/seq/data/STAR_genomes_v277/GRCm38_p6_GENCODE_primary/chrNameLength.txt stranded n 50 readcounts/ y
+sbatch make_wiggle_script_input_10_24_24.sh bedfiles/ /proj/seq/data/STAR_genomes_v277/GRCm38_p6_GENCODE_primary/chrNameLength.txt stranded n 50 readcounts/ y
 ```
 
 If 'stranded', then colors will be assigned red for a positive strand, denoted "+" and blue for a negative strand, denoted "-". You can manually change the color assignments in the output of this step, if desired. If the 'stranded' parameter is provided, the script expects to find "_+" and "_-" in the file name to determine strandedness and will flag an error otherwise.
@@ -203,12 +203,12 @@ Running the above will create the shell script to be used in [step 7](https://gi
 ### Manual Input Generation
 If you want to create the input file run instructions manually, use the following format for each wiggle track:
 ```
-sbatch --wrap="python3 make_wiggle_tracks_10_2_24.py <bed_file_path/bedfile> <path/to/chrNameLength.txt> <header> <color> <lognormalize y or n> <bin_size> <number of readcount for sample's alignment OR 1>"
+sbatch --wrap="python3 make_wiggle_tracks_11_19_24.py <bed_file_path/bedfile> <path/to/chrNameLength.txt> <header> <color> <lognormalize y or n> <bin_size> <number of readcount for sample's alignment OR 1>"
 ```
 
 Real data example:
 ```
-sbatch --wrap="python3 make_wiggle_tracks_10_2_24.py bedfiles/pabpn1_-_if_reverse_stranded_F16.bed /proj/seq/data/STAR_genomes_v277/GRCm38_p6_GENCODE_primary/chrNameLength.txt pabpn1_-_if_reverse_stranded_F16 blue n 50 16157990"
+sbatch --wrap="python3 make_wiggle_tracks_11_19_24.py bedfiles/pabpn1_-_if_reverse_stranded_F16.bed /proj/seq/data/STAR_genomes_v277/GRCm38_p6_GENCODE_primary/chrNameLength.txt pabpn1_-_if_reverse_stranded_F16 blue n 50 16157990"
 ```
 
 You could submit these individually in terminal or by writing the commands line by line into a shell script to submit all jobs at once.
@@ -219,7 +219,7 @@ You could submit these individually in terminal or by writing the commands line 
 
 
 ## 7. Run Wiggle Script
-To run the [make_wiggle_tracks_10_2_24.py](make_wiggle_tracks_10_2_24.py) script, use the previously generated input file. If you automatically generated this in the previous step, simply run:
+To run the [make_wiggle_tracks_11_19_24.py](make_wiggle_tracks_11_19_24.py) script, use the previously generated input file. If you automatically generated this in the previous step, simply run:
 ```
 bash run_wiggle_script.sh
 ```
@@ -446,12 +446,12 @@ Running the above will create the shell script to be used in [step 7](https://gi
 ### Manual Input Generation  
 If you want to create the input file run instructions manually, use the following format for each wiggle track:
 ```
-python3 make_wiggle_tracks_10_2_24.py <bed_file_path/bedfile> <path/to/chrNameLength.txt> <header> <color> <lognormalize y or n> <bin_size> <number of readcount for sample's alignment OR 1>
+python3 make_wiggle_tracks_11_19_24.py <bed_file_path/bedfile> <path/to/chrNameLength.txt> <header> <color> <lognormalize y or n> <bin_size> <number of readcount for sample's alignment OR 1>
 ```
 
 Real data example:
 ```
-python3 make_wiggle_tracks_10_2_24.py bedfiles/pabpn1_-_if_reverse_stranded_F16.bed /proj/seq/data/STAR_genomes_v277/GRCm38_p6_GENCODE_primary/chrNameLength.txt pabpn1_-_if_reverse_stranded_F16 blue n 50 16157990
+python3 make_wiggle_tracks_11_19_24.py bedfiles/pabpn1_-_if_reverse_stranded_F16.bed /proj/seq/data/STAR_genomes_v277/GRCm38_p6_GENCODE_primary/chrNameLength.txt pabpn1_-_if_reverse_stranded_F16 blue n 50 16157990
 ```
 
 You could submit these individually in terminal or by writing the commands line by line into a file you can run them all as a single script.
@@ -462,7 +462,7 @@ You could submit these individually in terminal or by writing the commands line 
 
 
 ## 7. Run Wiggle Script - Local  
-To run the [make_wiggle_tracks_10_2_24.py](make_wiggle_tracks_10_2_24.py) script, use the previously generated input file or run each command individually. If you automatically generated this in the previous step, simply run:
+To run the [make_wiggle_tracks_11_19_24.py](make_wiggle_tracks_11_19_24.py) script, use the previously generated input file or run each command individually. If you automatically generated this in the previous step, simply run:
 ```
 bash run_wiggle_script.sh
 ```
