@@ -35,16 +35,16 @@ do
 	if [ $strandedness == 'stranded' ]; then
 		# identify strand to assign color
 		if [[ $file_name == *+* ]]; then
-			echo "python3 make_wiggle_tracks_10_2_24.py $file $chrNameLengthfile ${file_name} red ${log_norm} ${bin_size} ${read_counts}" >> run_wiggle_script.sh
+			echo "python3 make_wiggle_tracks_11_19_24.py $file $chrNameLengthfile ${file_name} red ${log_norm} ${bin_size} ${read_counts}" >> run_wiggle_script.sh
 		elif [[ $file_name == *-* ]]; then
-			echo "python3 make_wiggle_tracks_10_2_24.py $file $chrNameLengthfile ${file_name} blue ${log_norm} ${bin_size} ${read_counts}" >> run_wiggle_script.sh
+			echo "python3 make_wiggle_tracks_11_19_24.py $file $chrNameLengthfile ${file_name} blue ${log_norm} ${bin_size} ${read_counts}" >> run_wiggle_script.sh
 		else
 			echo $file_name
 			echo "error: strand not clearly detectable"
 			exit
 		fi
 	else
-		echo "python3 make_wiggle_tracks_10_2_24.py $file $chrNameLengthfile ${file_name} black ${log_norm} ${bin_size} ${read_counts}" >> run_wiggle_script.sh
+		echo "python3 make_wiggle_tracks_11_19_24.py $file $chrNameLengthfile ${file_name} black ${log_norm} ${bin_size} ${read_counts}" >> run_wiggle_script.sh
 	fi
 done
 	
