@@ -123,12 +123,12 @@ As far as I know, this is impossible to determine retroactively without external
 #### You may wish to filter your data as you split by strand
 If so, run:
 ```
-sbatch samtools_filter_binarize_split_strands_1_30_24.sh <paired/unpaired> <forward/reversed> </path/to/bamfiles/>
+sbatch samtools_filter_binarize_split_strands_1_30_24.sh <paired/unpaired> <forward/reversed> </path/to/samfiles/>
 ```
 #### You may not wish to filter your data as you split by strand
 If so, run:
 ```
-sbatch samtools_binarize_split_strands_1_30_24.sh <paired/unpaired> <forward/reversed> </path/to/bamfiles/>
+sbatch samtools_binarize_split_strands_1_30_24.sh <paired/unpaired> <forward/reversed> </path/to/samfiles/>
 ```
 Depending on your previous [step 2](https://github.com/CalabreseLab/seekr2.0_update_manuscript/blob/main/wiggles/README_general_wiggle_instructions.md#2-downsample-and-merge-replicates) choice, you may have already filtered your data, and could thus run either script here. 
 
