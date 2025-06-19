@@ -1,11 +1,12 @@
 import os
 
 # Input received as serial cluster submission for each exp:control pairing
-# python3 control_normalize_wiggles_2_20_24.py </path/to/exp.wig> </path/to/control.wig>
+# python3 control_normalize_wiggles_6_19_25.py </path/to/exp.wig> </path/to/control.wig>
 # Input for eCLIPs automatically developed with setup_normalize_wigs_2_20_24.sh
 
 
 def read_in_wiggle_info(wiggle_file, initial_header):
+
     wiggle_dict = {}
     with open(wiggle_file, "r") as f:
         for i,line in enumerate(f):
@@ -19,6 +20,7 @@ def read_in_wiggle_info(wiggle_file, initial_header):
             else:
                 position, signal = line.strip().split("\t")
                 wiggle_dict[chrom][position] = signal
+
     return(wiggle_dict, initial_header, span)
 
 def normalize_wiggles(exp_dict, control_dict):
@@ -26,15 +28,18 @@ def normalize_wiggles(exp_dict, control_dict):
     for chrom in exp_dict:
         adj_dict[chrom] = {}
         for position in exp_dict[chrom]:
-            if position not in control_dict[chrom]:
-                # this means that the control signal was zero
-                adj_dict[chrom][position] = float(exp_dict[chrom][position])
-            elif control_dict[chrom][position] != 0:
-                adj_dict[chrom][position] = float(exp_dict[chrom][position]) - float(control_dict[chrom][position])
-                if adj_dict[chrom][position] <= float(0):
-                    del adj_dict[chrom][position]
-                else:
-                    adj_dict[chrom][position] = str(adj_dict[chrom][position])
+            if chrom in control_dict.keys():
+                if position not in control_dict[chrom]:
+                    # this means that the control signal was zero
+                    adj_dict[chrom][position] = float(exp_dict[chrom][position])
+                elif control_dict[chrom][position] != 0:
+                    adj_dict[chrom][position] = float(exp_dict[chrom][position]) - float(control_dict[chrom][position])
+                    if adj_dict[chrom][position] <= float(0):
+                        del adj_dict[chrom][position]
+                    else:
+                        adj_dict[chrom][position] = str(adj_dict[chrom][position])
+            else: # if chrom is not in the control dict at all
+                adj_dict[chrom][position] = float(exp_dict[chrom][position]) # no adjustment to signal needed
     return(adj_dict)
 
 def write_wiggle_file(outfile_name, adj_dict, initial_header, wig_span):
@@ -78,7 +83,7 @@ if __name__ == "__main__":
         os.makedirs("control_normalized_wiggles")
 
     # write out the adjusted wiggle file
-    outfile_name = exp_file.strip(".wig")
+    outfile_name = exp_file.replace(".wig", "")
     outfile_name = "control_normalized_wiggles/" + outfile_name.replace(exp_path, "")
     outfile_name = outfile_name + "_normalized.wig"
     write_wiggle_file(outfile_name, adj_dict, initial_header, wig_span)
