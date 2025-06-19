@@ -236,7 +236,7 @@ If you have a control sample that you would like to normalize your experimental 
 
 For each combination of experiment and control sample, run:
 ```
-sbatch --wrap="python3 control_normalize_wiggles_2_20_24.py <path/to/experimental_wiggle.wig> <path/to/control_wiggle.wig>"
+sbatch --wrap="python3 control_normalize_wiggles_6_19_25.py <path/to/experimental_wiggle.wig> <path/to/control_wiggle.wig>"
 ```
 
 
@@ -479,7 +479,7 @@ If you have a control sample that you would like to normalize your experimental 
 
 For each combination of experiment and control sample, run:
 ```
-python3 control_normalize_wiggles_2_20_24.py <path/to/experimental_wiggle.wig> <path/to/control_wiggle.wig>
+python3 control_normalize_wiggles_6_19_25.py <path/to/experimental_wiggle.wig> <path/to/control_wiggle.wig>
 ```
 
 
