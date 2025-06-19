@@ -2,7 +2,6 @@ import os
 
 # Input received as serial cluster submission for each exp:control pairing
 # python3 control_normalize_wiggles_6_19_25.py </path/to/exp.wig> </path/to/control.wig>
-# Input for eCLIPs automatically developed with setup_normalize_wigs_2_20_24.sh
 
 
 def read_in_wiggle_info(wiggle_file, initial_header):
