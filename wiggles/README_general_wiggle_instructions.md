@@ -79,7 +79,7 @@ This is due to the jobs running in tandem, and therefore the intial directory cr
 ### If you do not elect to downsample and merge
 
 
-You may want to filter your data (default q 30, excludes multi-mapping reads)- if so run: 
+You may want to filter your data (default -q 30, can exclude multi-mapping reads) - if so run: 
 ```
 bash samtools_sam_to_bam_filter_1_30_24.sh </path/to/samfiles/>
 ```
@@ -120,17 +120,11 @@ As far as I know, this is impossible to determine retroactively without external
 
 
 **C. Using the information you obtained above:**  
-#### You may wish to filter your data as you split by strand
-If so, run:
+
+Run:
 ```
-sbatch samtools_filter_binarize_split_strands_1_30_24.sh <paired/unpaired> <forward/reversed> </path/to/samfiles/>
+sbatch samtools_split_strands_11_11_25.sh <paired/unpaired> <forward/reversed> </path/to/bamfiles/from/step2/>
 ```
-#### You may not wish to filter your data as you split by strand
-If so, run:
-```
-sbatch samtools_binarize_split_strands_1_30_24.sh <paired/unpaired> <forward/reversed> </path/to/samfiles/>
-```
-Depending on your previous [step 2](https://github.com/CalabreseLab/seekr2.0_update_manuscript/blob/main/wiggles/README_general_wiggle_instructions.md#2-downsample-and-merge-replicates) choice, you may have already filtered your data, and could thus run either script here. 
 
 
 
